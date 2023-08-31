@@ -107,11 +107,22 @@ int main(void)
     cout << fixed << setprecision(4) << db << endl;        // 4 dicimal places are displayed // 776.6988
     cout << defaultfloat << setprecision(4) << db << endl; // all digits displayed are 4 // 776.7
 
-// make it a function-like macro
+    // make it a function-like macro
 #define FIXED_PREC(num, prec) std::fixed << std::setprecision(prec) << num
     cout << FIXED_PREC(166.9476112, 2) << endl;
 
     std::cout << defaultfloat; // return to the 'defaultfloat' format
+
+    // another example:
+    cout    << setiosflags(ios::fixed)          // not exponential
+            << setiosflags(ios::showpoint)      // always use point
+            << setprecision(2)                  // digits to right
+            << setw(10)                         // field width
+            << 166.9476112
+            << endl;
+
+    cout << resetiosflags; // to reset ios flags
+
 
     // sqrt : square root (include <cmath>)
     double number, answer;
@@ -298,5 +309,14 @@ int main(void)
 
     
 
+    // Note: cout 
+    int g = 0;
+
+    cout << ++g << " " <<  ++g << endl;
+    // Since C++17 (GCC 7) the functions are guaranteed to be called left-to-right,
+    // Prior to C++17 the order of function calls was unspecified, meaning that
+    //      they may be called in any order (and this order does not need to be the same 
+    //      on repeated invocations).
+    
     return 0;
 }

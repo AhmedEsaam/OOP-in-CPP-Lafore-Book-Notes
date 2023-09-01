@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cstring>
+#include <string>
 #include <cstdlib> //for srand(), rand()
 #include <ctime>   //for time for srand()
 
@@ -169,6 +170,13 @@ public:
                             easier to understand on a fundamental level.
 */
 
+/*
+    This class improves on the traditional Cstring in many ways:
+        • You no longer need to worry about creating an array of the right size to hold string variables.
+        • The string class assumes all the responsibility for memory management.
+        • The string class allows the use of overloaded operators.
+*/
+
 
 
 int main(int argc, char const *argv[])
@@ -268,13 +276,13 @@ int main(int argc, char const *argv[])
     cout << "You entered: " << str << endl;
 
     // including entered spaces
-    cout << "\nEnter a string: \n";
+    cout << "\nEnter a string with spaces: \n";
     cin.ignore();               // *flush the previous 'Newline' character
     cin.get(str, MAX);          // stops reading until entering '\n' (Newline) (default value) or exceeding 'MAX'
     cout << "You entered: " << str << endl;
     
     // Reading multiple lines
-    cout << "\nEnter a string: \n";
+    cout << "\nEnter a string in multible lines: \n";
     cin.ignore();
     cin.get(str, MAX, '$');     // stops reading until entering '$' or exceeding the size of the array 'MAX'
     cout << "You entered: " << str << endl;
@@ -320,9 +328,129 @@ int main(int argc, char const *argv[])
     
 
     /* STANDARD C++ STRING CLASS *//////////////////////////
+    /// Initialization....................
+    string ss1("Man");
+    string ss2 = "Beast";
+    string ss3;
+
+    /// input/output......................
+    string full_name, address, greeting("Hello, ");
+    cout << "Enter your full name: " << endl;
+    getline(cin, full_name);    // getline(cin, str) handles embedded blanks
+    greeting += full_name;
+    cout << greeting << endl;
+
+    cout << "Enter your address in multible lines (terminate by $): " << endl;
+    getline(cin, address, '$'); // terminates readng when reaching a delimiter '$', deault is '\n'
+    cout << "Your address: " << address << endl;
+    
+    /// Operators overloading.............
+    // assign
+    ss3 = ss1;
+    cout << "ss3 = " << ss3 << endl;
+    // concatinate
+    ss3 = "Neither " + ss1 + " nor ";
+    ss3 += ss2;
+    cout << "ss3 = " << ss3 << endl;
+    // compare
+    if(ss1 == ss2) cout << "ss1 = ss2" << endl;
+    else if(ss1 < ss2) cout << "ss1 comes before ss2" << endl;  // comapres characters until they differ
+    else if(ss1 > ss2) cout << "ss1 comes after ss2" << endl;
+    // Access
+    cout << ss2[3] << endl;     // doesn’t warn you if you attempt to access a character that’s out of bounds
+                                // (beyond the end of the string, for example)
     
 
+    /// Member functions..................
+    // swap
+    ss1.swap(ss2);
+
+    // Search
+    string ss4 = "In Xanadu did Kubla Kahn a stately pleasure dome decree";
+    int n;
+    n = ss4.find("Kubla");                      // finds the index at which it first incounters the given string
+    cout << "Found Kubla at " << n << endl;
+
+    n = ss4.find_first_of("spde");              // looks for the first char that is one of the given string
+    cout << "First of spde at " << n << endl;
     
+    n = ss4.find_first_not_of("aeiouAEIOU");    // looks for the first char that is NOT one of the given string
+    cout << "First consonant at " << n << endl;
+    
+    n = ss4.rfind("K");                         // Scans the string backward
+    cout << "last 'K' at " << n << endl;
+
+    n = ss4.find_last_of("spde");               // finds the last character matching one of a group of characters                    // Scans the string backward
+    cout << "last of spde at " << n << endl;
+
+    n = ss4.find_last_not_of("aeiouAEIOU");     // looks for the last char that is NOT one of the given string
+    cout << "last consonant at " << n << endl;
+
+        //* All these functions return –1 if the target is not found
+    
+    // Modifying/Manipulating
+    string ss5("Quick! Send for Count Graystone.");
+    string ss6("Lord");
+    string ss7("Don't ");
+    ss5.erase(0, 7);                // remove "Quick! "
+    ss5.replace(9, 5, ss6);         // replace "Count" with "Lord"
+    ss5.replace(0, 1, "s");         // replace 'S' with 's'
+    ss5.insert(0, ss7);             // insert "Don't " at beginning
+    ss5.erase(ss5.size()-1, 1);     // remove '.'
+    ss5.append(3, '!'); 
+
+    //* An algorithm to replace multiple instances of a substring with another string
+    int x = ss5.find(' ');          // find a space
+    while( x < ss5.size() )         // loop while spaces remain
+    { 
+        ss5.replace(x, 1, "/");     // replace with slash
+        x = ss5.find(' ');          // find next space
+    }
+    cout << "s: " << ss5 << endl;
+
+    // Comparing
+    int cn = ss6.compare(1, 2, ss7, 1, 2);  // comapres ss6 from index 1 for 2 characters with ss7 from index 1 for 2 characters;
+
+    // Substring
+    cout << ss7.substr(0, 2) << endl;       // returns substring from index 0 for 2 characters
+
+    // Accessing
+    cout << ss7.at(2) << endl;  // It’s safer to use instead of the [] operator, 
+                                // → as it causes the program to stop if you use an out-of-bounds index.
+                                // (It actually throws an exception.)
+    
+    // Length/size
+    int size;
+    size = ss7.length();
+    size = ss7.size();
+    cout << size << endl;
+    
+
+    // Size of allocated memory by string object
+    int cap = ss7.capacity();
+    cout << cap << endl;
+    
+
+    // Copying string object to char array
+    string ss8 = "Ahmed";
+    int siz = ss8.size();
+    char charray[20];
+    ss8.copy(charray, siz, 0);  // arguments: Ptr to char array, Number of chars to copy, Position of the 1st char to copy
+    charray[siz] = 0;           // terminate with '\0'
+        // we can also use c_str() or data() functions which both use pointers.
+
+    /*
+        string member functions we’ve discussed have numerous variations in the numbers and types of arguments they take. 
+        (Consult your compiler’s documentation for details.)
+    */
+
+    /* 
+        Note:
+            •• string objects are not terminated with a null or zero as C-strings are.
+
+    */
+
+
     return 0;
 }
 

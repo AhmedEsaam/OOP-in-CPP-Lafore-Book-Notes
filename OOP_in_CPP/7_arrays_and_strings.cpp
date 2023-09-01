@@ -416,7 +416,7 @@ int main(int argc, char const *argv[])
 
     // Accessing
     cout << ss7.at(2) << endl;  // It’s safer to use instead of the [] operator, 
-                                // → as it causes the program to stop if you use an out-of-bounds index.
+                                // → as it causes the program to stop if you use an out-of-bounds index,
                                 // (It actually throws an exception.)
     
     // Length/size
@@ -425,12 +425,10 @@ int main(int argc, char const *argv[])
     size = ss7.size();
     cout << size << endl;
     
-
     // Size of allocated memory by string object
     int cap = ss7.capacity();
     cout << cap << endl;
     
-
     // Copying string object to char array
     string ss8 = "Ahmed";
     int siz = ss8.size();
@@ -447,7 +445,6 @@ int main(int argc, char const *argv[])
     /* 
         Note:
             •• string objects are not terminated with a null or zero as C-strings are.
-
     */
 
 

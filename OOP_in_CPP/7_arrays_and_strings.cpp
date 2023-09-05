@@ -287,7 +287,7 @@ int main(int argc, char const *argv[])
     cin.get(str, MAX, '$');     // stops reading until entering '$' or exceeding the size of the array 'MAX'
     cout << "You entered: " << str << endl;
 
-    // Inirialization
+    // Initialization
     char str2[] =   "Farewell! thou art too dear for my possessing. ";
 
     char str3[] =   "Oh, Captain! "

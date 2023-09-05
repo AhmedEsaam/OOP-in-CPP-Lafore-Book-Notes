@@ -48,6 +48,7 @@ class Distance
 private:
     int feet;
     float inches;
+    constexpr static const float METER_TO_FEET = 3.280833F;
 public:
     Distance() : feet(0), inches(0.0)
     {   }
@@ -62,12 +63,25 @@ public:
     {   cout << feet << "\' " << inches << "\""; }
     
     Distance operator +(Distance) const;  
-    void operator +=(Distance);  
+    void operator +=(Distance);
+    bool operator <(Distance) const;
 
-    bool operator <(Distance) const;      
+    /* Data Conversions ____________________*/
+    // Convert from meters to Distance. 
+    Distance(float meters)      // Distance d = meters;   // Also called conversion constructor
+    {
+        float fltFeets = meters * METER_TO_FEET;
+        feet = static_cast<int>(fltFeets);
+        inches = 12 * (fltFeets - feet);
+    }
+    // Convert from Distance to meters. 
+    operator float() const
+    {
+        float fltFeets = static_cast<float>(feet) + inches / 12;
+        return fltFeets/METER_TO_FEET;
+    }
 };
         
-
 Distance Distance::operator +(Distance d2) const        
 {
     // the operand in the leftside in (op1 + op2) is the one that the operator is a member of.
@@ -111,7 +125,7 @@ private:
 public:
     String()
     {   strcpy(str, ""); }
-    String(char s[])
+    String(char s[])    // convert from C-string to String object.
     {   strcpy(str, s); }
     void get_str()
     {   
@@ -124,6 +138,14 @@ public:
     String operator +(String) const;
     bool operator ==(String) const;
     char& operator [](int);
+
+    /* Data Conversions ____________________*/
+    // Convert from String object to a C-string.
+    operator char*()
+    {
+        return str;
+    }
+
 };
 
 
@@ -155,7 +177,117 @@ char& String::operator [](int i)    // An obj[i] can be used as L-value or R-val
 }
 
 
+// Conversions between objects of user-defined types
+class Time12;       // forward declaration
+class Time24;
+#define dest    1   // conversion routines in destination classes 
 
+class Time12
+{
+private:
+    int hrs;
+    int mins;
+    bool pm;
+public:
+    Time12() : hrs(12), mins(0), pm(false)
+    {   }
+    Time12(int h, int m, bool p) : hrs(h), mins(m), pm(p)
+    {   }
+    int get_hrs()
+    {   return hrs; }
+    int get_mins()
+    {   return mins; }
+    bool get_pm()
+    {   return pm; }
+    void display() const
+    {
+        if(hrs < 10) cout << "0";   // extra 0 for 01
+        cout << hrs << ":";
+        if(mins < 10) cout << "0";
+        string am_pm = pm ? " PM" : " AM";
+        cout << mins << am_pm;
+    }
+    
+    #if dest
+    // Conversion routone: Time12 as destination, from Time24
+    Time12(Time24);
+    #else
+    // Conversion routone: Time12 as source, from Time24
+    operator Time24() const;
+    #endif
+};
+
+
+class Time24
+{
+private:
+    int hrs;
+    int mins;
+public:
+    Time24() : hrs(0), mins(0)
+    {   }
+    Time24(int h, int m) : hrs(h), mins(m)
+    {   }
+    int get_hrs()
+    {   return hrs; }
+    int get_mins()
+    {   return mins; }
+    void display() const
+    {
+        if(hrs < 10) cout << "0";   // extra 0 for 01
+        cout << hrs << ":";
+        if(mins < 10) cout << "0";
+        cout << mins;
+    }
+    
+    #if dest
+    // Conversion routone: Time24 as destination from Time12
+    Time24(Time12);
+    #else
+    // Conversion routone: Time24 as source, from Time12
+    operator Time12() const;
+    #endif
+}; 
+
+#if dest
+// Coversion routines in Destinations:
+Time12::Time12(Time24 t24)      // Time12 ← Time24
+{
+    int hrs24 = t24.get_hrs();
+
+    hrs =  hrs24 % 12 + ((hrs24 % 12) ? 0 : 12);
+    mins = t24.get_mins();
+    pm = hrs24 >= 12;
+}
+
+Time24::Time24(Time12 t12)      // Time24 ← Time12
+{
+    hrs = t12.get_hrs() % 12 + (t12.get_pm() ? 12 : 0);
+    mins = t12.get_mins();
+}
+
+#else
+// Coversion routines in Source:
+Time12::operator Time24() const     // Time24 ← Time12
+{
+    int hrs24 = hrs % 12 + (pm ? 12 : 0);
+    return Time24(hrs24, mins);
+}
+
+Time24::operator Time12() const     // Time12 ← Time24
+{
+    int hrs12 = hrs % 12 + (hrs % 12 ? 0 : 12);
+    bool pm = hrs >= 12;
+    return Time12(hrs12, mins, pm);
+}
+#endif
+
+
+/* When to put Conversion routines in Destinations, Sources, or both in one class?
+    Mostly you can take your pick, However, sometimes the choice is made for you. 
+    >> If you have purchased a library of classes, you may not have access
+        to their source code. So, you have to put the from and to your class conversion routines in your defined class.
+*/
 
 int main()
 {
@@ -222,10 +354,69 @@ int main()
     s1.display();
     cout << endl;
 
-    ch = s1[100];       // accessing index out of SIZE. 
+    // ch = s1[100];       // accessing index out of SIZE. 
                         // (will throw an error messgae then exit without actually accessing)
-    s1[100] = 'a';
+    // s1[100] = 'a';
 
+
+
+    /* Data Conversion ............................. */
+
+    /*  The compiler doesn’t need any special instructions to use = operator:
+        → Normally, when the value of one object is assigned to another of the same type,
+          the values of all the member data items are simply copied into the new object.
+
+        When a compiler converts between types implicitly or explicitly, it has internal routines to do so.
+        ... But when converting between basic types and user-defined types, we must write these routines ourselves.
+    */
+
+    // From meters to English Distance
+    Distance d5;
+    d5 = 43.59F;
+    cout << "\nEnglish Distance = "; d5.show_dist(); cout << endl;;
+    // From English Distance to meters
+    float meters = static_cast<float>(d5);
+    cout << "Float meters = " << meters << endl;
+    meters = d5;    // compiler automatically invoke the provided conversion routine
+    cout << "Float meters = " << meters << endl;    
+
+    // From C-string to a String object
+    char* cs = "Look ";
+    String ss = cs;
+    // From a String object to a C-string
+    cout << endl;
+    String ss2 = "who's there!";
+    cout << ss << static_cast<char*>(ss2) << endl;
+        // ↑ emplicit conversion: the compiler looks for a way to convert ss2 to a type that << does know about, 
+        // ... and it finds the operator cast (char*) we provided.
+    cs = ss2;       // emplicit conversion: compiler automatically invoke the provided conversion routine
+    cout << ss << cs << endl;
     
+    
+    // Data conversions between user-defined types
+    // Time12 ← Time24
+    int h, m;
+    cout << "\nEnter 24-hour time: "; cin >> h;
+    cout << "minutes: "; cin >> m;
+    Time24 t24(h, m);
+    cout << "You entered: "; t24.display();
+
+    Time12 t12 = t24;
+    cout << "\n12-hour time: "; t12.display();
+    cout << endl;
+    
+    // Time24 ← Time12
+    char pm_ch;
+    cout << "\nEnter 12-hour time: "; cin >> h;
+    cout << "minutes: "; cin >> m;
+    cout << "p/a: "; cin >> pm_ch;
+    Time12 tt12(h, m, pm_ch == 'p');
+    cout << "You entered: "; tt12.display();
+
+    Time24 tt24 = tt12;
+    cout << "\n24-hour time: "; tt24.display();
+    
+    
+
     return 0;
 }

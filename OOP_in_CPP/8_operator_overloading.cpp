@@ -50,9 +50,9 @@ private:
     float inches;
     constexpr static const float METER_TO_FEET = 3.280833F;
 public:
-    Distance() : feet(0), inches(0.0)
-    {   }
-    Distance(int ft, float in) : feet(ft), inches(in)
+    // Distance() : feet(0), inches(0.0)
+    // {   }
+    explicit Distance(int ft = 0, float in = 0.0) : feet(ft), inches(in)
     {   }
     void get_dist()
     {
@@ -68,12 +68,13 @@ public:
 
     /* Data Conversions ____________________*/
     // Convert from meters to Distance. 
-    Distance(float meters)      // Distance d = meters;   // Also called conversion constructor
+    explicit Distance(float meters)      // Distance d = meters;   // Also called conversion constructor
     {
         float fltFeets = meters * METER_TO_FEET;
         feet = static_cast<int>(fltFeets);
         inches = 12 * (fltFeets - feet);
     }
+
     // Convert from Distance to meters. 
     operator float() const
     {
@@ -81,6 +82,21 @@ public:
         return fltFeets/METER_TO_FEET;
     }
 };
+
+/* The problem of constructors -that can be called with a single argument- and implicit conversions:
+    - Compiler uses that constructor to perform implcit conversions whenever it's necessary Like 
+        (Distance == 5) here the compiler convert 5 into a Distance type to make the comparison.
+        >> Or when it's in an argumnet like fun(Distance) if the user inputs 
+        an integer number instead of a Distance in the argument, the compiler ues the constructor to convert it to a Distance. 
+    
+    - 'explicit' keyword prevents the compiler from making an implicit conversions using this constructor 
+        (that the constructor must be used explicitly not implicitly).
+
+    - As a side effect of the explicit constructor, note that you can’t use the form of object initialization
+        that uses an equal sign.
+*/
+
+
         
 Distance Distance::operator +(Distance d2) const        
 {
@@ -189,9 +205,9 @@ private:
     int mins;
     bool pm;
 public:
-    Time12() : hrs(12), mins(0), pm(false)
-    {   }
-    Time12(int h, int m, bool p) : hrs(h), mins(m), pm(p)
+    // Time12() : hrs(12), mins(0), pm(false)
+    // {   }
+    explicit Time12(int h = 12, int m = 0, bool p = false) : hrs(h), mins(m), pm(p)
     {   }
     int get_hrs()
     {   return hrs; }
@@ -266,6 +282,7 @@ Time24::Time24(Time12 t12)      // Time24 ← Time12
     mins = t12.get_mins();
 }
 
+
 #else
 // Coversion routines in Source:
 Time12::operator Time24() const     // Time24 ← Time12
@@ -310,6 +327,9 @@ int main()
 
     /* Binary Operators ............................. */
     // + operator (add two English distances)
+    // Distance fg = {5, 3.2}; // copy-list initialization (implicitly use copy constructors)
+    // fg.show_dist(); cout << endl;
+
     Distance d1, d2(11, 6.25), d3, d4;
     d1.get_dist();
     d3 = d1 + d2;           // single operator
@@ -372,7 +392,7 @@ int main()
 
     // From meters to English Distance
     Distance d5;
-    d5 = 43.59F;
+    d5 = static_cast<Distance>(43.59F);
     cout << "\nEnglish Distance = "; d5.show_dist(); cout << endl;;
     // From English Distance to meters
     float meters = static_cast<float>(d5);
@@ -414,9 +434,43 @@ int main()
     cout << "You entered: "; tt12.display();
 
     Time24 tt24 = tt12;
-    cout << "\n24-hour time: "; tt24.display();
-    
-    
+    cout << "\n24-hour time: "; tt24.display();    
 
     return 0;
 }
+
+
+/*
+    Operator overloading and Type conversions:
+        >> give you the opportunity to create what amounts to an entirely new language. 
+        -   it can make your listing more intuitive and readable,
+            It can also have the opposite effect, making your listing more obscure and hard to understand
+    
+       - Guidelines to use them in a convenient way:
+        • Use Similar Meanings for Similar Syntax:
+            >> Use overloaded operators to perform operations that are as similar as possible 
+            to those performed on basic data types. (ex: a = b + c; + operator must be used to perform operation like or close to addition.)
+
+            >> Use overloaded operators in the same way you use basic types.
+            If you overload one arithmetic operator, you may for consistency want to overload all of them. This will prevent confusion.
+        
+        •  Show Restraint and Avoid Ambiguity:
+            >> Use overloaded operators sparingly, and only when the usage is obvious. 
+            When the meaning is not close enough to any operator, use a function instead, as its name would provide the meaning.
+            >> Use the operator overloading sparingly as anyone unfamiliar with your listing will need to do considerable research
+            to find out what a statement means.
+
+        - In data converion if you wrote the conversion routine from one data type to another twice,
+            one in the Destination (as a one-arg. constructor) and one in the Source (as a conversion operator.),
+            >> The compiler will signal an error (as the compiler does not like to be placed in a situation where 
+                it doesn’t know what to do, )
+
+        - You can’t overload a binary operator to be a unary operator, or vice versa.
+
+        - Not all operators can be overloaded.
+            (. , :: , ?: , -> , creating new operators) cannot be overloaded.
+
+        
+
+ 
+*/

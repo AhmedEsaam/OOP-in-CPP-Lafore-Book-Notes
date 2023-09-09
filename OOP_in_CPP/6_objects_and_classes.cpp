@@ -86,14 +86,15 @@ class Distance
 private:
     int feet;
     float inches;
+    mutable int ID; 
 
 public:
     // constructor with no arguments
-    Distance() : feet(0), inches(0.0)
+    Distance() : feet(0), inches(0.0), ID(0)
     {
     }
     // constructor with arguments
-    Distance(int ft, float in) : feet(ft), inches(in)
+    Distance(int ft, float in, int id) : feet(ft), inches(in), ID(id)
     {
     }
     // a way to enter values for data members
@@ -103,6 +104,19 @@ public:
         cin >> feet;
         cout << "Enter inches: ";
         cin >> inches;
+    }
+
+    void setfeet(int f)
+    {
+        feet = f;
+    }
+    void setID(int id) const   
+    {
+        this->ID = id;
+        // this function can be called with const Distance object.
+        // Putting const means this function can be used with const objects,
+        //      If const does not exist: we cannot pass const object as 'this' as an implicit argumnet.
+        //      It must be passed as a const object ('const this'). 
     }
 
     void showdist() const
@@ -146,6 +160,7 @@ Distance Distance::add_dist(const Distance &d2) const
             → to other objects of the same class that are passed as arguments.
 */
 
+
 /* CONST MEMBER FUNCTION */
 /*
     Member functions that do nothing but acquire data from an object are obvious candidates
@@ -162,9 +177,9 @@ Distance Distance::add_dist(const Distance &d2) const
     • If we want to declare an Ordinary function that cannot modify its arguments, we would say:
         →   int fun(const int a, const int b);
 
-    • But class data members are all implicit arguments to member functions,
-            so when we want to declare a member function that cannot modify it's arguments we would say:
-        →   int fun() const;
+    • But class data members are all implicit arguments to member functions ('this' is an implicit argument),
+            so when we want to declare a member function that cannot modify it's parent object fields we would say:
+        →   int fun() const;    // means this functions has (const this) as an argument.
 
     ///////////////////////
 
@@ -172,6 +187,7 @@ Distance Distance::add_dist(const Distance &d2) const
         >> If there is a separate function declaration, const must be used in both
             declaration and definition.
 */
+
 
 /* STRUCTURES and CLASSES */
 /*
@@ -294,7 +310,7 @@ int main(void)
 
     ///////////
 
-    Distance d1(11, 6.25);
+    Distance d1(11, 6.25, 0);
     Distance d2, d3;
     d2.getdist();
 
@@ -334,15 +350,15 @@ int main(void)
 
     //////////// const objects
     /*
-        - These objects can use only any const member function.
+        - These objects can use only any const member functions.
             (because they’re the only ones that guarantee not to modify it.)
-        - but cannot use any non-const function.
+        - And they cannot use any non-const function.
             (you can’t modify it.)
 
-        * Remember, using const helps the compiler to help you
+        * Remember, using const helps the compiler to help you.
     */
 
-    const Distance football(300, 0);
+    const Distance football(300, 0, 1);
 
     // football.getdist(); //ERROR: getdist() not const
 
@@ -350,6 +366,20 @@ int main(void)
     football.showdist();
     cout << endl;
 
+    // const objects with mutable fields
+    /*
+        - But, the object encompasses a number if different data members, 
+        and declaring a const object means that all its data members are const.
+        • Creating an object where some of its data members are const and some are mutable 
+            is not possible using only this syntax.
+        • C++ provides the 'mutable' keyword to mark certain data members to still can be mutated
+            when the oject containing it is const. 
+    */
+    const Distance mut(11, 5.2, 2);
+    // mut.setfeet(5);      // error, mut is a const.
+    mut.setID(3);           // this is ok.
+
+    
     return 0;
 }
 

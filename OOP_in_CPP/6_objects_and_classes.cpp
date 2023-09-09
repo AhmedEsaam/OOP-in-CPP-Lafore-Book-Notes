@@ -19,6 +19,9 @@ public:
     void setData(int d)
     {
         data = d;
+        // dara is actually: (this->data) and 'this' is an object pointer
+        //  that points to "this" object that is calling the function, and it is 
+        //  passed to the function as an implicit argument. 
     }
     void showData()
     {
@@ -379,6 +382,12 @@ int main(void)
     // mut.setfeet(5);      // error, mut is a const.
     mut.setID(3);           // this is ok.
 
+    /*
+        - This object is said to have 'logical constness'. 
+        That means that in theory it can’t be modified, but in practice it can, in a limited way.
+        
+        - In a non-const object, of course, both attributes could be modified.
+    */
     
     return 0;
 }

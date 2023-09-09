@@ -446,6 +446,22 @@ int main()
         -   it can make your listing more intuitive and readable,
             It can also have the opposite effect, making your listing more obscure and hard to understand
     
+       - Some conversions take place between user-defined types and basic types. 
+            Two approaches are used in such conversions:
+            • A one-argument constructor changes a basic type to a user-defined type. 
+            • Conversion operator converts a user-defined type to a basic type. 
+            • When one user-defined type is converted to another, either approach can be used.
+
+        TABLE: Type Conversions:
+            _________________________________________________________________________
+                            Routine in Destination          Routine in Source
+            _________________________________________________________________________
+            Basic to basic          (Built-In Conversion Operators)
+            Basic to class      Constructor                         N/A
+            Class to basic          N/A                     Conversion operator
+            Class to class      Constructor                 Conversion operator
+            _________________________________________________________________________
+
        - Guidelines to use them in a convenient way:
         • Use Similar Meanings for Similar Syntax:
             >> Use overloaded operators to perform operations that are as similar as possible 
@@ -470,7 +486,4 @@ int main()
         - Not all operators can be overloaded.
             (. , :: , ?: , -> , creating new operators) cannot be overloaded.
 
-        
-
- 
 */

@@ -6,9 +6,10 @@ using namespace std;
 /* Why we need Inheritance?
     • It permits code reusability; Reusing existing code saves time and money and increases a program’s reliability. 
     • The ease of distributing class libraries; A programmer can use a class created by another 
-        person or company, and, without modifying it, derive other classes from it that are 
-        suited to particular situations.
+        person or company, derive other classes from it that are suited to particular situations.
+        (with no need to modify —or even access the source code of— the base class.)
 
+        - This leads to new flexibility in the software development process, and to a wider range of roles for software developers:
         ► Programmer A creates a general-purpose programming tool (i.e. class).
         ► Programmer B creates a specialized version of this class (He may not have access to the source code for this class). 
             (B likes the class A, but thinks it could be improved, so he creates a new class 
@@ -487,7 +488,7 @@ private:
         like: "Scientist is a kind of Employee"; 
         >> As Scientist has all the characteristics of Employee, and in addition to some of its own.
 
-        ♦ In UML: Sientist -► Employee
+        ♦ In UML: Sientist -► Employee     (represented b an open trangle pointed to the base) (in UML, inheritance is called generalization)
 
     //-----------------------------------------------------------------------
     ■ Association: When 'objects' of classes has some kind of relationship.

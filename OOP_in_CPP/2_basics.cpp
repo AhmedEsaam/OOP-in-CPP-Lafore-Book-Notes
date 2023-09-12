@@ -317,6 +317,15 @@ int main(void)
     // Prior to C++17 the order of function calls was unspecified, meaning that
     //      they may be called in any order (and this order does not need to be the same 
     //      on repeated invocations).
+
+    // Beware of the short circuit evaluation of && and ||:
+    /*
+        • (x and y) is equivalent to (if x then y else x)
+        • (x or y) is equivalent to (if x then x else y)
+        In either case, x is only evaluated once.
+        (regardles of the precedence between left and write operands of && or || .)
+        // after evaluating left operand, right operand is evaluated an then the logical operator is evaluated.
+    */
     
     return 0;
 }

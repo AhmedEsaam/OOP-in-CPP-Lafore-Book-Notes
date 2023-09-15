@@ -158,6 +158,14 @@ public:
     }
 };
 
+/* Note:
+    There is a potential defect in this class that:
+        - all String objects occupied the same fixed amount of memory.
+        • A string shorter than this fixed length wasted memory,
+        • and a longer string —if one were mistakenly generated— could crash the system 
+            by extending beyond the end of the array.
+*/
+
 
 
 /* STANDARD C++ STRING CLASS */////////////////////

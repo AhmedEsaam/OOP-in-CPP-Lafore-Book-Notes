@@ -19,7 +19,7 @@ public:
     void setData(int d)
     {
         data = d;
-        // dara is actually: (this->data) and 'this' is an object pointer
+        // data is actually: (this->data) and 'this' is an object pointer
         //  that points to "this" object that is calling the function, and it is 
         //  passed to the function as an implicit argument. 
     }

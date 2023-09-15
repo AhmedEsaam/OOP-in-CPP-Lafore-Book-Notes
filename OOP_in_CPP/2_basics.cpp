@@ -318,6 +318,7 @@ int main(void)
     //      they may be called in any order (and this order does not need to be the same 
     //      on repeated invocations).
 
+
     // Beware of the short circuit evaluation of && and ||:
     /*
         • (x and y) is equivalent to (if x then y else x)

@@ -482,7 +482,10 @@ private:
 };
 
 
-/*  Classes Relationships /////////////////////////////////////////////////////////////////:
+/// STATIC DIAGRAMS: 
+// these relationships (such as association and generalization) do not change as the program runs.
+
+/*  Classes Relationships & UML Class Diagrams ////////////////////////////////////////////////////////////////:
     //-----------------------------------------------------------------------
     ■ Inheritance: is often called a "kind of" relationship.
         like: "Scientist is a kind of Employee"; 
@@ -493,7 +496,7 @@ private:
     //-----------------------------------------------------------------------
     ■ Association: When 'objects' of classes has some kind of relationship.
 
-        Navigability in Association:
+        'Navigability in Association':
         • if each of the two classes objects call operations in the other class,
             → it's called 'bidirectional' association (there would be arrowheads on both ends of the line.)
         • if it only goes one way,
@@ -504,6 +507,7 @@ private:
 
         ♦ In UML: Time12 → Time24
 
+        .................................
         OR:
             - When one of the member functions of a class has an argument of the other class, 
             then, it must be calling this object member functions.
@@ -514,6 +518,24 @@ private:
             >> As class Lumber has an attribute of class Distance.
 
         ♦ In UML: Lumber → Distance
+
+        .................................
+        'Multiplicity of the association':
+        • Sometimes exactly one object of class A relates to exactly one object of class B. 
+            In other situations, many objects of a class, or a specific number, may be involved in an association.
+            → Multiblicity of the Association is the number of objects involved in the association.
+            
+        ♦ In UML: TABLE: UML Multiplicity symbols at ends of the line
+        ______________________________________________
+        Symbol          Meaning
+        ______________________________________________
+        1               One
+        *               Some (0 to infinity ∞)
+        0..1            None or one
+        1..*            One or more
+        2..4            from 2 to 4   (2,3 or 4)
+        7,11            7 or 11
+        ______________________________________________
         
     //-----------------------------------------------------------------------
     ■ Aggregation: is is called a "has a" relationship, it is also called a "part-whole" relationship.
@@ -538,6 +560,49 @@ private:
 
         ♦ In UML: Car ♦─ Door             (diamond-shaped arrowhead is solid instead of open.)
 */
+
+
+
+
+/// DYNAMIC BEHAVIOR:
+// an object is created, it is affected by events or messages from other parts of the program, it perhaps makes decisions, it does various things, and it is eventually deleted.
+
+/*  State Diagrams ////////////////////////////////////////////////////////////////////////////////////////////:
+■ In UML state diagrams, a state is represented by a rectangle with rounded corners. 
+    - The state is named at the top of the rectangle. 
+    - State names usually begin with a capital letter. 
+    - Below the name are any activities the object performs when it enters the state.
+    - State diagrams can include two special states: a black disk represents the initial state, 
+        and a black disk surrounded by a circle represents the final state.
+
+    • Unlike classes in a class diagram, there’s nothing in a program’s code 
+        that corresponds exactly to states in a state diagram.
+
+    • To know what states to include, you must have an idea:
+        ► what circumstances an object will find itself in?
+        ► and what it will do as a result?
+
+
+■ Transitions between states are represented by directed arrows from one rectangle to another.
+    • It can be labeled with:
+        ► event name:   - Transition names are not capitalized. 
+                        - The names can be closer to English than to C++ usage.
+                        - The keyword 'after' is used to name these transitions, with the time as a parameter.
+
+        ► a [guard]:    - Which is a condition that must be satisfied if the transition is to occur.
+                        - Guards are written in brackets.
+
+        ♦ Example: --- after (500 ms) [distance < track length] --→
+
+
+    • Events can be the same on more than one transition, at which the guards determine which transition will occur.
+
+    • A self transition: if it returns to the same state where it began.
+*/
+        
+
+
+
 
 
 // Diamond class tree:  

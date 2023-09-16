@@ -10,7 +10,7 @@ using namespace std;
     • Passing arrays and strings to functions
     • Obtaining memory from the system
     • Creating data structures such as linked lists
-    • when we sort person objects for example, we don’t move the objects themselves; 
+    • when we sort person objects for example, we don't move the objects themselves; 
         we move the pointers to the objects. 
         ► This eliminates the need to shuffle the objects around in memory,
             which can be very time-consuming if the objects are large.
@@ -27,6 +27,7 @@ using namespace std;
 */
 
 const int MAX = 5;      // Array Size
+int *intPtr;            // Global pointer (initialized to 0 (NULL))
 
 
 ///* @brief String class using 'new'
@@ -49,7 +50,7 @@ public:
     {
         cout << "Deleting String." << endl;
         delete[] str;
-        // It’s reasonable to deallocate the memory when the object is no longer needed.
+        // It's reasonable to deallocate the memory when the object is no longer needed.
         // Since this class allocates memory at run time which is not deallocated automatically by itself
         //  when scope terminates, unless it is deallocated deliperately.
     }
@@ -100,9 +101,9 @@ public:
 ///* Linked list ............................................................:
 /* 
     The linked list provides a more flexible storage system than fixed-size contiguous arrays in that: 
-    • It doesn’t use arrays at all. Instead, space for each data item is obtained as needed with 'new', 
+    • It doesn't use arrays at all. Instead, space for each data item is obtained as needed with 'new', 
         (each item is connected, or linked, to the next data item using a pointer.) 
-    • The individual items don’t need to be located contiguously in memory the way array elements are; 
+    • The individual items don't need to be located contiguously in memory the way array elements are; 
         they can be scattered anywhere. 
 
     ☼ The disadvantage is that:
@@ -153,7 +154,6 @@ void Linklist::add_item(int d)
         → its members are accessed using the -> member-access operator. 
 */
 
-
 void Linklist::display()
 {
     Link* current = head;
@@ -167,7 +167,6 @@ void Linklist::display()
     for( ; current != NULL; current = current-> next)
         {   cout << current->data << endl; }
 }
-
 
 
 ///* Parsing Arithmetic Operations .....................................................:
@@ -273,16 +272,16 @@ int main()
     cout << v2 << endl;
 
     /* Note:
-        The pointer must be given some value, or it will point to an addresss we don’t want it to point to.
+        The pointer must be given some value, or it will point to an addresss we don't want it to point to.
         >> Rogue pointer values can result in system crashes and are difficult to debug.
         So, Make sure you give every pointer variable a valid address value before using it.
     */
 
     ///* To assign one kind of pointer type to another ................................:
     float flovar = 98.6;
-    // int* ptrint = &flovar;   //ERROR: can’t assign float* to int*
+    // int* ptrint = &flovar;   //ERROR: can't assign float* to int*
     int *ptrint = reinterpret_cast<int*>(&flovar); 
-    // Static casts won’t work with pointers. 
+    // Static casts won't work with pointers. 
     // Old-style C casts can be used, but are always a bad idea in C++.
 
 
@@ -306,14 +305,14 @@ int main()
     void* vp;   // defines vp as a pointer to void 
     vp = &v;    // assigns address of variable v to pointer vp
     vp = &f;    // assigns address of variable f to pointer vp
-    p = reinterpret_cast<int*>(&f);    // assigns address of float variable f to the pointer to int p
+    p = reinterpret_cast<int*>(&f);     // assigns address of float variable f to the pointer to int p
 
     
     ///* Pointers and Arrays .........................................................:
     int i;
-    int intArr[5] = {56, 62, 96, 45, 12};
+    int intArr[5] = {56, 62, 96, 45, 12};                   // Note: the address of an array is always a constant.
     for (i = 0; i < 5; i++)
-    {   cout << endl << *(intArr + i); } cout << endl;     // the name of an array is its address
+    {   cout << endl << *(intArr + i); } cout << endl;      // the name of an array is its address
     // The C++ compiler is smart enough (using the pointer type) to take the size of the data into account when
     //   it performs arithmetic on data addresses (here it increments by the size of int.)
     /* Note:
@@ -359,9 +358,9 @@ int main()
     
 
     ///* Pointers to string ..........................................................:
-    char str1[] = "Defined as an array";
-    char *str2 = "Defined as an pointer";
-    
+    char str1[] = "Defined as an array";            // A string constant can be defined as an array or as a pointer. 
+    char *str2 = "Defined as an pointer";           // The pointer approach may be more flexible, 
+                                                    //  → but there is a danger that the pointer value will be corrupted.
     cout << str1 << endl;
     cout << str2 << endl;
     
@@ -429,28 +428,39 @@ int main()
     int len = strlen(str5);
     
     char *pch;
-    pch = new char[len + 1];    // sets aside memory: string + '\0' (dynamically allocated memory)
+    pch = new char[len + 1];        // sets aside memory: string + '\0' (dynamically allocated memory)
 
     strcpy(pch, str5);
     cout << "\npch = " << pch << endl;
     
     /* There is no C++ equivalent to 'realloc' where you can change the size of memory that has been alloctaed.
-        - You’ll need to fall back on the ploy of creating a larger (or smaller) space with new, 
+        - You'll need to fall back on the ploy of creating a larger (or smaller) space with new, 
             and copying your data from the old area to the new one.  
     */
     
-    delete[] pch;               // release pointer's memory
+    delete[] pch;                   // release pointer's memory
 
     /* Using new and delete in functions
         - If the function uses a local variable as a pointer to this memory, 
             the pointer will be destroyed when the function terminates.
         BUT: the memory will be left as an orphan, taking up space that is inaccessible to the rest of the program. 
-            So, Thus it is always good practice, and often essential, to delete memory when you’re through with it.
+            So, Thus it is always good practice, and often essential, to delete memory when you're through with it.
     */
-    // Note: Deleting the memory doesn’t delete the pointer that points to it.
-    //       and doesn’t change the address value in the pointer. 
+    // Note: Deleting the memory doesn't delete the pointer that points to it.
+    //       and doesn't change the address value in the pointer. 
     //       However, this address is no longer valid (doesn't point to allocated memory.)
 
+    char* chPtrsArray[MAX];         // Array of pointers to chars
+    for (i = 0; i < MAX; i++)       // allocated memory for char for every pointer
+    {   chPtrsArray[i] = new char; }
+    
+    // To delete the allocated memory for every pointer:
+    for (i = 0; i < MAX; i++)
+    {   delete chPtrsArray[i]; }
+    // Note:
+    // delete[] chPtrsArray;        // will delete the array of pointers, NOT the allocated memory that every pointers point to.
+    
+    
     // allocating a single object
     float * pFloat = new float;     // note that this var has name, only a pointer to it.
     delete pFloat;
@@ -514,7 +524,7 @@ int main()
     {   pPer[i]->printName(); }     cout << endl;
     
     /* Sorting pointers:
-        • when we sort person objects for example, we don’t move the objects themselves; 
+        • when we sort person objects for example, we don't move the objects themselves; 
             we move the pointers to the objects. 
             ► This eliminates the need to shuffle the objects around in memory,
                 which can be very time-consuming if the objects are large.
@@ -534,7 +544,7 @@ int main()
     lInt.display();
 
 
-    ///* Parsing Arithmetic Operations: .............................................:
+    ///* Example: Parsing Arithmetic Operations: .............................................:
     char ans;
     char str[LEN];
 
@@ -546,13 +556,11 @@ int main()
         cout << "\nEnter expression:" << endl;
         cin >> str;
         Expr* pExpr = new Expr(str);     // make expression
-        // pExpr->evaluate();
         cout << "= " << pExpr->evaluate();
         delete pExpr;
 
         cout << "\nDo another? (y/n): ";    cin >> ans;
     } while (ans =='y');
-    
     
 
 

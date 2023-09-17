@@ -5,9 +5,12 @@ using namespace std;
     Placing data and functions together into a single entity is a central
         idea in object-oriented programming
 
+    Classes are programming language definitions used by compiler to mount the code. 
+        Only the class objects instantiated take a memory space on runtime.
+
     • The data is hidden so it will be safe from accidental manipulation,
     • while the functions that operate on the data are public so they can
-     be accessed from outside the class
+        be accessed from outside the class
 */
 
 class smallobj

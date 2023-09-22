@@ -460,6 +460,7 @@ public:
 int Epsilon::total = 0;     // definition of the static data member
 
 
+
 /// Assignment operator and Copy constructor  ///////////////////////////////////////////:
  
 /* 
@@ -475,7 +476,13 @@ int Epsilon::total = 0;     // definition of the static data member
 */
 
 
-/* ♠ Initialization & Assignment ...................................................
+/* ♠ Initialization & Assignment ♠ ...................................................
+    ------------------------------------
+    ■ Assignment:
+        ► invoke the Assignment operator '=':
+            - obj2 = obj1;                  // invoke the assignment operator '='
+            - obj = {data, ...};            // implicitly call the multi-arg constructor, then invoke the assignment operator '='
+            - obj = data                    // same as above -if the data members are one, or there is a one-arg constructor used for type conversion
     ------------------------------------
     ■ Initialization:
         ► invoke the no or one-or-more arg. constructors:
@@ -486,19 +493,13 @@ int Epsilon::total = 0;     // definition of the static data member
             - Type obj = {data, ...};       // copy-list initialization
             - Type obj2 = obj1;             // copy object
             - Type obj2(obj1);              // copy object
-    ------------------------------------
-    ■ Assignment:
-        ► invoke the Assignment operator '=':
-            - obj2 = obj1;                  // invoke the assignment operator '='
-            - obj = {data, ...};            // implicitly call the multi-arg constructor, then invoke the assignment operator '='
-            - obj = data                    // same as above -if the data members are one, or there is a one-arg constructor used for type conversion
 */
 
 
 
 /// ■ Overloading the Assignment Operator =
 
-#define CHAIN_EQUAL_OP  2       // 0: no chin, 
+#define CHAIN_EQUAL_OP  2       // 0: no chain, 
                                 // 1: takes arg. by 'value'     and return by 'value'
                                 // 2: takes arg. by 'reference' and return by 'reference' 
 
@@ -513,10 +514,9 @@ public:
     Zeta(int d) : data(d) { total++; id = total; }
     void display() { cout << "#" << id << ": " << data << ", total = " << total; }
 
-
 // verloading the = operator:
 #if ! CHAIN_EQUAL_OP 
-    void operator = (Zeta& z)       // • passing by reference conserves memory,
+    void operator = (Zeta& z)       // • passing by reference conserves memory
     {
         data = z.data;
         cout << "\nAssignment operator invoked";
@@ -565,7 +565,7 @@ public:
          
         The only possible solution is to return a pointer to 'this' object, like the following implementation: 
     */
-    Zeta& operator = (Zeta& z)
+    Zeta& operator = (const Zeta& z)
     {
         data = z.data;
         cout << "\nAssignment operator invoked";
@@ -588,13 +588,15 @@ public:
     */
 };
 
-
 int Zeta::total = 0;
 
 
 
-
 /// ■ The Copy Contructor
+
+// The default copy constructor, which is provided automatically by the compiler for every object, performs a member-by-member copy.
+
+
 
 
 

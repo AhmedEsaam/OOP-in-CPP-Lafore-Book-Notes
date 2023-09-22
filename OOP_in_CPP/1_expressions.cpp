@@ -82,7 +82,7 @@ int main()
     5;      "sifi";     0xF62C5605;     // literals: numbers, strings, addresses, ...etc.
     number(10);                         // unnamed object
     5 + 2;      arr[0] + obj;           // results of most operators
-    &obj;       &arr[0];                // address-of operator (which s require an lvalue as its lefthand operand)
+    &obj;       &arr[0];                // address-of operator (which requires an lvalue operand)
     get_value(x);                       // function call that returns by value
     int(5.2);                           // type cast
 
@@ -154,3 +154,20 @@ int main()
 
     return 0;
 }
+
+
+/* ♣ lvales and rvalues as operands ♣ */////////////////////////////////////
+
+// ♦ Operators that require lvalues as their operand (argument) :-
+// '='          The built-in assignment operator.   // as its left operand
+// '&'          The built-in address-of operator.
+// '++', '--'   increment and decrement
+
+// ♦ almost other operators require rvalues.
+
+/*
+    The rules are not as strict for user-defined operators;
+    → Any object, including an rvalue, can be used to call member functions, 
+    (including overloaded =, &, ++, and -- operators.)
+*/
+

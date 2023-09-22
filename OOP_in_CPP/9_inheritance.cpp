@@ -64,11 +64,21 @@ public:
     {   return CountDn(--count); }
 };
 
-/* ACCESS SPECIFIERS: ..........................................................................................
-    private:    members can be accessed within the class, but not outside it (that includes derived classes).
-    public:     members can be accessed outside the class (that includes derived classes members).
-    protected:  members can be accessed within the class, but not outside it (exept for derived classes).
-        (derived class member functions can access public or protected members of the base class.)
+/* The concepts of 'Encapsulation' and 'Data Hiding'
+    dictate that non-member functions should not be able to access an object’s private or protected data. 
+    (The policy is, if you’re not a member, you can’t get in!)
+*/
+
+/* ACCESS SPECIFIERS:.....................(for member functions and non-member functions).............................
+    private:    ► Can only be accessed in member functions.
+                    - members can be accessed within the class, but not outside it (that includes derived classes).
+                
+    protected:  ► Can only be accessed in member functions in this class and the derived classes. 
+                    - members can be accessed within the class, but not outside it (exept for derived classes).
+                    - derived class member functions can access public or protected members of the base class.
+
+    public:     ► Can be accessed in member functions and non-member functions. 
+                    - members can be accessed outside the class (that includes derived classes members).
 */
 
 /* TABLE: Inheritance and Accessibility:

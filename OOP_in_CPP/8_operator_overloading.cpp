@@ -87,7 +87,7 @@ public:
     - Compiler uses that constructor to perform implcit conversions whenever it's necessary Like 
         (Distance == 5) here the compiler convert 5 into a Distance type to make the comparison.
         >> Or when it's in an argumnet like fun(Distance) if the user inputs 
-        an integer number instead of a Distance in the argument, the compiler ues the constructor to convert it to a Distance. 
+        an integer number instead of a Distance in the argument, the compiler uses the constructor to convert it to a Distance. 
     
     - 'explicit' keyword prevents the compiler from making an implicit conversions using this constructor 
         (that the constructor must be used explicitly not implicitly).
@@ -374,7 +374,7 @@ int main()
     s1.display();
     cout << endl;
 
-    // ch = s1[100];       // accessing index out of SIZE. 
+    // ch = s1[100];    // accessing index out of SIZE. 
                         // (will throw an error messgae then exit without actually accessing)
     // s1[100] = 'a';
 
@@ -485,5 +485,4 @@ int main()
 
         - Not all operators can be overloaded.
             (. , :: , ?: , -> , creating new operators) cannot be overloaded.
-
 */

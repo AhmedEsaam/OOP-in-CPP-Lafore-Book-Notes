@@ -316,10 +316,10 @@ int main()
     // The C++ compiler is smart enough (using the pointer type) to take the size of the data into account when
     //   it performs arithmetic on data addresses (here it increments by the size of int.)
     /* Note:
-        Array name is a pointer constant (lvalue) NOT a pointer variable,
+        Array name is a pointer constant (a non-modifiable lvalue) NOT a pointer variable,
         Which means that it is the address where the system has chosen to place your array.
         intArr++;  is like  0x36466631++;
-        But intArr[i] is an rvalue as it is *(intArr + i)
+        But intArr[i] is an lvalue as it is *(intArr + i)
     */
 
     int *iArrptr = intArr;

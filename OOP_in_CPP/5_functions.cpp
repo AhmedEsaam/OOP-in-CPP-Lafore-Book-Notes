@@ -272,7 +272,7 @@ int main(void)
 
 int &setx()
 {
-    // returns an alias (reference) to a variable : (lvalue).
+    // returns an alias (reference) to a variable : (lvalue)
     return x; // Must be a global variable.
 }
 

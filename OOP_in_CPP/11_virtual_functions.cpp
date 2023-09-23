@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 using namespace std;
 
 
@@ -476,7 +477,7 @@ int Epsilon::total = 0;     // definition of the static data member
 */
 
 
-/* ♠ Initialization & Assignment ♠ ...................................................
+/* ♠ Initialization & Assignment ♠
     ------------------------------------
     ■ Assignment:
         ► invoke the Assignment operator '=':
@@ -493,11 +494,17 @@ int Epsilon::total = 0;     // definition of the static data member
             - Type obj = {data, ...};       // copy-list initialization
             - Type obj2 = obj1;             // copy object
             - Type obj2(obj1);              // copy object
+    ------------------------------------
+    ■ Temporary objects:
+        ► invoke the Copy Constructor:
+            - void func(Type obj);          // passing by value
+            - Type func();                  // returning by value
+        // the compiler uses the copy constructor to make a copy -temporary- object that is destroyed when the scope terminates. 
+            
 */
 
 
-
-/// ■ Overloading the Assignment Operator =
+// Implementation:
 
 #define CHAIN_EQUAL_OP  2       // 0: no chain, 
                                 // 1: takes arg. by 'value'     and return by 'value'
@@ -513,8 +520,9 @@ public:
     Zeta() { total++; id = total; }
     Zeta(int d) : data(d) { total++; id = total; }
     void display() { cout << "#" << id << ": " << data << ", total = " << total; }
+    ~Zeta() { total--; }
 
-// verloading the = operator:
+/// ■ Overloading the Assignment Operator =
 #if ! CHAIN_EQUAL_OP 
     void operator = (Zeta& z)       // • passing by reference conserves memory
     {
@@ -586,17 +594,141 @@ public:
         When you overload the = operator you assume responsibility for doing whatever the default assignment operator did. 
         Often this involves copying data members from one object to another.
     */
+   
+   
+/// ■ The Copy Contructor:
+
+    // The default copy constructor, which is provided automatically by the compiler for every object, performs a member-by-member copy.
+    // → This is similar to what the assignment operator does; the difference is that (the copy constructor also creates a new object.)
+
+    // Overloading the copy constructor:
+    Zeta(const Zeta& z)             // this is pronounced "Zeta of Zeta ref."   
+    {
+        data = z.data;
+        total++;    id = total;     // give an id to the new object
+        cout << "\nCopy constructor invoked"; 
+    }
+
+    /* Note: IMPORTANT
+        We CANNOT pass the argument by value as:    Zeta(Zeta z)
+        → Bacause when an argument is passed by value, a copy of it is constructed,
+        → at which the copy constructor is invoked, (which is overrided by this very function).
+        → So, it calls itself as its argument is still passed by value,
+        → hence, it calls itself over and over until the compiler runs out of memory.
+
+        ► So, in the copy constructor, the argument must be passed by reference, which creates no copies.
+    */
 };
 
 int Zeta::total = 0;
 
 
+/* When to overload the assignmnet operator and Copy constructor?
 
-/// ■ The Copy Contructor
+    • When you overload the assignment operator, you almost always want to overload the copy constructor as well (and vice versa).
+        ► You don't wnat your custom scheme used in some situations and the default other scheme used in others.
+        ► Even if you don’t think you’ll use one or the other, you may find the compiler using them in nonobvious situations,
+            (such as passing an argument to a function by value, and returning from a function by value.)
 
-// The default copy constructor, which is provided automatically by the compiler for every object, performs a member-by-member copy.
+    • if the constructor to a class involves the use of system resources such as memory or disk files, 
+        ► you should almost always overload both the assignment operator and the copy constructor, and make sure they do what you want. 
+*/
 
 
+/* How to Prohibit Copying?
+    • You may want to prohibit the copying of an object using these operations.
+        - For example, it might be essential that each object of a class to be created using only no or one-or-more argument constructors 
+            with a unique value for some member as an argument or based on a static value to the class, 
+        → If an object is copied -using the '=' op. or the copy contructor-, the copy will be given the same value. 
+
+    ◘ To prohibit invoking those two schemes in non-member functions like main():
+        ► Just overload the assignment operator and the copy constructor as private members.
+        ► You don’t need to define the functions, since they will never be called.
+*/
+class Eta
+{
+private:
+    Eta& operator = (Eta&);         // private assignment operator
+    Eta(Eta&);    
+
+public:
+    Eta(){}                  // private copy constructor
+};
+
+
+
+/// A Memory-Efficient String Class ////////////////////////////////////////////////////////////////////:
+/*
+    The problem with classes that only holds a pointer to the allocated memory, by which we conserve memory,
+    so that when copying an object to another, only the pointer is copied and there'll still be only one allocated memory,
+    is that when deleting one object, all other objects points to this memory become dangling.
+
+    ► Solution:
+        is to store a count of the pointers pointing to that allocated memory, so that not destroying it until destroying
+        the last object that points to it.
+
+        → And that is by expanding the principle type which is char pointer to also store the number of pointers points to it,
+        by making a new type holds the two (the char pointer and the count) of which the 'String' class is a friend.
+*/
+class StrWithCount
+{
+private:
+    int count;
+    char* str;
+    friend class String;                // now class 'String' has access to all class 'StrWithCount' members
+
+    StrWithCount(char* s)               // one-arg constructor
+    {
+        int length = strlen(s);         // acquire string length
+        str = new char[length + 1];     // allocate memory for the new string
+        strcpy(str, s);                 // copy actual string provided as argument to that memory
+        count = 1;                      // instantiate count at 1
+    }
+
+    ~StrWithCount()
+    {   delete[] str; }                 // deallocate the string memory
+};
+
+
+class String
+{
+private:
+    StrWithCount* pSWC;
+public:
+    String()                            // no-arg constructor
+    {   pSWC = new StrWithCount((char*)"NULL"); }
+    String(char* s)                     // one-arg constructor
+    {   pSWC = new StrWithCount(s); }
+    String(const String& S)             // Copy constructor
+    {   
+        pSWC = S.pSWC;                  // Both the new object and the argument points to the same allocated memory
+        (pSWC->count)++;                // increment the count of pointers to that memory
+    }
+    ~String()
+    {
+        if(pSWC->count == 1)
+            delete pSWC;                // (We don’t need brackets on delete because we’re deleting only a single strCount object.) 
+        else
+            (pSWC->count)--;
+    }
+    void display()
+    { 
+        cout << pSWC->str;
+        cout << " (address = " << pSWC << ")";
+    }
+    String& operator = (const String& S)
+    {
+        if(pSWC->count == 1)            // if this object is the last that points to a string
+            delete pSWC;                // delete it (deallocate memory of 'StrWithCount')
+        else
+            (pSWC->count)--;
+        
+        pSWC = S.pSWC;                  // assign the argument to this object
+        (pSWC->count)++;                // increment the counter of the argument 'StrWithCount'
+
+        return *this;
+    }
+};
 
 
 
@@ -811,18 +943,81 @@ int main()
     // ------------------------------------------------
     // ■ Copy constructor
 
-    // Note:    instantiating an object only invokes one cnstructor.
-    //  So, these syntaxes do not invoke the 'no-arg constructor' or the 'one-arg constructor', only the copy constructor.
+    /// The copy constructor may be invoked:
 
-    Zeta z5 = z4;       // Copy initialization is not assignment (=operator function is not invoked)
-    cout << "\nz5 = "; z5.display();
+    // 1 ♦ When an object is defined ♦:
+        Zeta z5 = z4;       // Copy initialization is not assignment (=operator function is not invoked)
+        cout << "\nz5 = "; z5.display();
 
-    Zeta z6(z4);        // has the same effect (alternative form of copy initialization)
-    cout << "\nz6 = "; z6.display();
+        Zeta z6(z4);        // has the same effect (alternative form of copy initialization)
+        cout << "\nz6 = "; z6.display();
+
+        cout << endl;
+        // Note:    instantiating an object only invokes one cnstructor.
+        //          So, these syntaxes do not invoke the 'no-arg constructor' or the 'one-arg constructor', only the copy constructor.
+
+    // 2 ♦ When arguments are passed by 'value' to functions ♦:
+        void func(Zeta);
+        func(z6);
+        // It creates the copy that the function operates on.
+        // Of course, the copy constructor is not invoked if the argument is passed by reference or if a pointer to it is passed.
+    
+    // 3 ♦ When values are returned from functions ♦:
+        Zeta func(void);
+        z6 = func();
+
+        // The copy constructor creates a temporary object when a value is returned from a function:
+        // - The copy constructor would be invoked to create a copy of the value returned by func(), 
+        // - and this value would be assigned (invoking the assignment operator) to z6.
+        cout << endl;
+    
+
+    /* CAUTION:
+        'Passing by value' and 'returning by value' invoke the destructor as well, 
+        when the temporary objects created by the copy constructor are destroyed when the function returns.
+        → This can cause considerable consternation if you’re not expecting it.
+        -like giving a new id based on the total number of objects, as this will cause wrong ids when creating new objects-.
+
+        ► So, when working with objects that require more than member-by-member copying (in the copy constructor) 
+        Pass and return by reference —not by value— whenever possible.
+    */
+
+    // ------------------------------------------------
+    // ■ Prohibiting Copying using the assignment operator or copy constructor:
+
+    Eta et1, et2;
+    // et1 = et2;               // Error: the assignment function is inaccessable
+    // Eta et3(et1);            // Error: the copy constructor is inaccessable
+
+
+    /// A Memory-Efficient String Class ////////////////////////////////////////////////////////////////////:
+    String s1 = (char*)"When the fox preaches, look to your geese.";            // one-arg constructor invoked
+    cout << "\ns1 = ";  s1.display();
+
+    String s2;                  // no-arg constructor invoked
+    s2 = s1;                    // overloaded-assignment-operator function invoked
+    cout << "\ns2 = ";  s2.display();
+
+    String s3(s1);              // copy constructor invoked
+    cout << "\ns3 = ";  s3.display();
 
     cout << endl;
 
+    // chain equal operator:
+    char str[] = "Say cheese!";
+    s1 = str;                   // one-arg constructor invoked: String(char*)
+    s3 = s2 = s1;               // overloaded-assignment-operator function invoked two times
 
-        
+    cout << "\ns1 = ";  s1.display();
+    cout << "\ns2 = ";  s2.display();
+    cout << "\ns3 = ";  s3.display();
+    cout << endl;
+
+
     return 0;
 }
+
+
+void func(Zeta) {}
+
+Zeta func(void) { return Zeta(0); }

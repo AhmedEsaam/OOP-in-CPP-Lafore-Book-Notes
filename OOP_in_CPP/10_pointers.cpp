@@ -359,7 +359,7 @@ int main()
 
     ///* Pointers to string ..........................................................:
     char str1[] = "Defined as an array";            // A string constant can be defined as an array or as a pointer. 
-    char *str2 = "Defined as an pointer";           // The pointer approach may be more flexible, 
+    char *str2 = (char*)"Defined as a pointer";     // The pointer approach may be more flexible, 
                                                     //  → but there is a danger that the pointer value will be corrupted.
     cout << str1 << endl;
     cout << str2 << endl;
@@ -372,7 +372,7 @@ int main()
     dispStr(str2);
 
     void cpyStr(char*, const char*);
-    char *str3 = "Self-conquest is the greatest victory.";
+    char *str3 = (char*)"Self-conquest is the greatest victory.";
     char str4[50];
     cpyStr(str4, str3);
     cout << str4 << endl;

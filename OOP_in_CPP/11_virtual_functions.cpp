@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <typeinfo>
 using namespace std;
 
 
@@ -94,6 +95,16 @@ public:
 };
 
 
+//-----------------------------------------------------------
+/* Virtual functions:
+    • Provide a way for a program to decide while it is running what function to call. 
+        → Ordinarily such decisions are made at compile time. 
+    • Make possible greater flexibility in performing the same kind of action on different kinds of objects. 
+        → In particular, they allow the use of functions called from an array of type pointer-to-base that actually
+            holds pointers (or references) to a variety of derived types. 
+            
+    ► This is an example of polymorphism. 
+*/
 
 /// Example: Person class ...............................................................................:
 class Person                                // abstract class
@@ -426,7 +437,7 @@ public:
     → To make an interface for them to read/write it's not convenient to refer to a specific object
         when we’re doing something that relates to the entire class.
     • So, for a function that only deals with static members, we must declare them to be 'static member function'.
-        Which we can invoke using the scope resolution operator with the class name directly, ex: Class::fun().
+        Which we can invoke using the scope resolution operator (::) with the class name directly, ex: Class::fun().
 */
 class Epsilon
 {
@@ -567,11 +578,12 @@ public:
                 Zeta obj(data);
                 return obj;     // an l-value but is destroyed after function terminates
             }
-        → This is not correct either as we can’t use reference returns on variables that are local to a function.
+        → This is not correct neither, as we can’t use reference returns on variables that are local to a function.
             Because, the local vars (that are not designated 'static') will be destryoed when the function returns, 
             and the reference returns it's address which will become meaningless after the var is destroyed.
          
-        The only possible solution is to return a pointer to 'this' object, like the following implementation: 
+        The only possible solution is to return a pointer to 'this' object, like the following implementation:
+        // You usually want to return by reference from overloaded assignment operators, using *this, to avoid the creation of extra objects. 
     */
     Zeta& operator = (const Zeta& z)
     {
@@ -579,6 +591,7 @@ public:
         cout << "\nAssignment operator invoked";
         return *this;  
     }
+
 
 #endif
 
@@ -657,7 +670,7 @@ public:
 
 
 
-/// A Memory-Efficient String Class ////////////////////////////////////////////////////////////////////:
+/// A Memory-Efficient String Class /////////////////////////////////////////////////////:
 /*
     The problem with classes that only holds a pointer to the allocated memory, by which we conserve memory,
     so that when copying an object to another, only the pointer is copied and there'll still be only one allocated memory,
@@ -718,25 +731,120 @@ public:
     }
     String& operator = (const String& S)
     {
-        if(pSWC->count == 1)            // if this object is the last that points to a string
-            delete pSWC;                // delete it (deallocate memory of 'StrWithCount')
-        else
-            (pSWC->count)--;
+        // if(this == &S)                  // handles the situation where S = S; otherwise, (if this object is the only that points to the 'StrWithCount') then, the 'StrWithCount' will be deleted and the program may crash.
+        //     return *this; 
         
-        pSWC = S.pSWC;                  // assign the argument to this object
-        (pSWC->count)++;                // increment the counter of the argument 'StrWithCount'
+        // OR:
+        if(this != &S)
+        {
+            if(pSWC->count == 1)        // if this object is the last that points to a string
+                delete pSWC;            // delete it (deallocate memory of 'StrWithCount')
+            else
+                (pSWC->count)--;
+            
+            pSWC = S.pSWC;              // assign the argument to this object
+            (pSWC->count)++;            // increment the counter of the argument 'StrWithCount'
+        }
 
         return *this;
     }
 };
 
+// ♦ The UML object diagram shows the relationship of a group of objects at a specific point in a program’s operation.
+
+
+/// The 'this' pointer //////////////////////////////////////////////////////////////////:
+class Theta
+{
+private:
+    char charArr[10];
+    int alpha;
+public:
+    void reveal()                       // see where this object is
+    {   cout << "\nMy object's address is " << this; }
+    // The member functions of every object have access to 'this' pointer, which points to the object itself.
+    // When you call a member function, it comes into existence with the value of this set to the address of the object for which it was called.
+    void tester()
+    {
+        this->alpha = 11;
+        cout << this->alpha;            // obviously there is no reason for this, you can put 'alpha' directly
+    }
+
+    // static Theta func() { return *this; }    // Error: 'this' may only be used in a non-static member function.
+    /* ► We should note that the this pointer is not available in 'static' member functions, 
+        since they are not associated with a particular object. */
+};
+
+
+
+/// Dynamic Type Information ////////////////////////////////////////////////////////////:
+// Check for the Type info:
+class Base_Polymorphic
+{
+    virtual void vertFunc() {}              // needed for dynamic_cast
+};
+
+class Derv1_ : public Base_Polymorphic
+{   };
+
+class Derv2_ : public Base_Polymorphic
+{   };
+
+bool isDerv1_(Base_Polymorphic *pUnknown)   // unknown subclass of Base_Polymorphic
+{
+    return (dynamic_cast<Derv1_*>(pUnknown));
+    // 'dynamic_cast' does type checking, it returns the Derv1_* pointer if the 'pUnknown' can be casted to Derv1_*
+    // otherwise, it returns NULL 
+}
+
+
+// 'dynamic_cast' allows such casting only in limited ways: 
+// Upcast and Downcast:
+class Base__
+{
+protected:
+    int ba;
+public:
+    Base__() : ba(0) {}
+    Base__(int b) : ba(b) {}
+    virtual void vertFunc() {}              // needed for 'Downcast' dynamic_cast
+    void show()
+    {   cout << "Base__: ba = " << ba << endl; }
+};
+
+
+class Derv__ : public Base__
+{
+private:
+    int da;
+public:
+    Derv__(int b, int d) : Base__(b), da(d) {}
+    void show()
+    {   cout << "Derv__: ba = " << ba << ", da = " << da << endl; }
+};
+
+// ♠ Review static_cast, const_cast, dynamic_cast, reinterpret_cast
+// ♠ and C-Style and Function-Style Cast.
+// https://stackoverflow.com/questions/332030/when-should-static-cast-dynamic-cast-const-cast-and-reinterpret-cast-be-used
+
+
+// The 'typeid' Operator:
+void displayName(Base_Polymorphic* pB)
+{
+    cout << "Pointer to an object of ";
+    cout << typeid(*pB).name() << endl;
+    // it uses the name member of the 'type_info' class along with the 'typeid' operator. 
+    // .. to display the name of the class of the object passed to it.
+}
+
+// → 'dynamic_cast' and 'typeid' work equally well with references.
 
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
 {
-    /// Virtual functions /////////////////////////////////////////////////////////////////////:
+    /// Virtual functions ///////////////////////////////////////////////////////////////:
 
     // accessing objects of different classes using the same statement:
     //  1. using normal functions:
@@ -843,12 +951,12 @@ int main()
     delete ptrPar;
 
 
-    /// Virtual base classes //////////////////////////////////////////////////////////////////:
+    /// Virtual base classes ////////////////////////////////////////////////////////////:
     Grand_Child gc;
     cout << gc.getData() << endl;
     
 
-    /// Friend functions //////////////////////////////////////////////////////////////////////:
+    /// Friend functions ////////////////////////////////////////////////////////////////:
     Alpha aa;
     Beta bb;
     cout << friFunc(aa, bb) << endl;
@@ -889,7 +997,7 @@ int main()
     cout << "\nSqaured = " << sqft << " square feet";
     
 
-    /// Friend classes //////////////////////////////////////////////////////////////////////:
+    /// Friend classes //////////////////////////////////////////////////////////////////:
     Gamma g;
     Delta d;
 
@@ -898,7 +1006,7 @@ int main()
     cout << endl;
 
 
-    /// Static functions ////////////////////////////////////////////////////////////////////:
+    /// Static functions ////////////////////////////////////////////////////////////////:
     Epsilon e1;
     Epsilon::showTotal();
 
@@ -921,7 +1029,7 @@ int main()
     */
 
 
-    /// Assignment operator and copy constructor ////////////////////////////////////////////:
+    /// Assignment operator and copy constructor ////////////////////////////////////////:
     // ------------------------------------------------
     // ■ Assignment operator =
 
@@ -990,7 +1098,7 @@ int main()
     // Eta et3(et1);            // Error: the copy constructor is inaccessable
 
 
-    /// A Memory-Efficient String Class ////////////////////////////////////////////////////////////////////:
+    /// A Memory-Efficient String Class /////////////////////////////////////////////////:
     String s1 = (char*)"When the fox preaches, look to your geese.";            // one-arg constructor invoked
     cout << "\ns1 = ";  s1.display();
 
@@ -1013,6 +1121,75 @@ int main()
     cout << "\ns3 = ";  s3.display();
     cout << endl;
 
+    // String = String; where the count = 1 :
+    s2 = (char*)"Hi";
+    cout << "\ns2 = ";  s2.display();
+    s2 = s2;
+    cout << "\ns2 = ";  s2.display();
+    cout << endl;
+
+
+    /// The 'this' pointer //////////////////////////////////////////////////////////////////:
+    Theta th1, th2, th3;
+    th1.reveal();
+    th2.reveal();
+    th3.reveal();
+    cout << endl;
+
+    Theta th4;
+    th4.tester();
+    cout << endl;
+    
+
+    /// Dynamic Type Information ////////////////////////////////////////////////////////////:
+    Derv1_* d1_ = new Derv1_;
+    Derv2_* d2_ = new Derv2_;
+
+    if(isDerv1_(d1_))
+        cout << "d1_ is a member of the Derv1_ subclass\n";
+    else
+        cout << "d1_ is not a member of the Derv1_ subclass\n";
+    
+    if(isDerv1_(d2_))
+        cout << "d2_ is a member of the Derv1_ subclass\n";
+    else
+        cout << "d2_ is not a member of the Derv1_ subclass\n";
+
+    
+    /// Upcast and Downcast: --------------------------------
+    
+    // ♦ Derived-to-Base (upcast): -- points to Base of Derv
+        // Upcasts are fine if all you want is the base part of the object.
+    Base__* pBase__ = new Base__(10);
+    Derv__* pDerv__ = new Derv__(21, 22);
+
+    pBase__ = dynamic_cast<Base__*>(pDerv__);
+
+    cout << endl;
+    pBase__->show();
+    pDerv__->show();
+
+
+    // ♦ Base-to-Derived (downcast): -- points to Derv Sub-object of Base
+    pBase__ = new Derv__(31, 32);                   // normal
+
+    pDerv__ = dynamic_cast<Derv__*>(pBase__);       // Base__ class must be polymorphic for Downcast dynamic_cast
+
+    cout << endl;
+    pBase__->show();
+    pDerv__->show();
+
+    cout << endl;
+
+    
+    /// The 'typeid' Operator: --------------------------------
+    Base_Polymorphic* pB = new Derv1_;
+    displayName(pB);
+
+    pB = new Derv2_;
+    displayName(pB);
+    
+    
 
     return 0;
 }

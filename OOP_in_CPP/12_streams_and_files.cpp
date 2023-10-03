@@ -1,5 +1,5 @@
 #include <iostream>
-#include <fstream>
+#include <fstream>          // for file I/O
 #include <iomanip>          // for manipulators
 // #include <strstream>
 #include <string>
@@ -168,7 +168,20 @@ int isFeet(string str)
 
 
 /// Disk File I/O with Streams //////////////////////////////////////////////////////
+/* Classes:
+    • 'ifstream'    for input                   (is derived from 'istream')
+    • 'ofstream'    for output                  (is derived from 'ostream')
+    • 'fstream'     for both input and output   (is derived from 'iostream')
 
+    // They are also derived, by multiple inheritance, from the 'fstreambase' class. 
+    // The 'ifstream', 'ofstream', and 'fstream' classes are declared in the <fstream> file.
+*/
+
+/* CAUTION:
+    ○   Disk I/O used in C++ is quite different from that in C.
+    ○   The old C functions, such as fread() and fwrite(), will still work in C++.
+    ○   Be careful about mixing the old C functions with C++ streams. They don’t always work together gracefully.
+*/
 
 
 
@@ -479,19 +492,182 @@ int main()
     // ____________________________________
     /// ► Error-Free Distnace Class:
 
-    Distance d;
+    Distance dist;
     char ans;
 
     do
     {
-        d.get_dist();
+        dist.get_dist();
         cout << "\nDistance = ";
-        d.show_dist();
+        dist.show_dist();
         cout << "\nDo another (y/n): ";
         cin >> ans;
         cin.ignore(10, '\n');
-    } while (ans != 'n');
+    } while (ans == 'y');
 
+    
+
+    /// ♦ Disk File I/O with Streams ♦ //////////////////////////////////////////////////////
+    char ch = 'x';
+    int i = 55;                                 // numbers stored as a series of characters
+    double d = 6.06;
+    string str1 = "disk";                       // strings without
+    string str2 = "file";                       //      embedded spaces
+
+    // ► Reading Data: - - - - - - - - - - 
+    ofstream outfile("outfiles/fdata.txt");     // create 'ofstream' object
+    // This initialization sets aside various resources for the file, and accesses or opens the file of that name on the disk. 
+    // If the file doesn’t exist, it is created. If it does exist, it is truncated and the new data replaces the old.
+    outfile << ch                               // insert (write) data into 'ofstream' object
+            << i    
+            << ' '                              // put delimeters ' ' to easily extract numbers and strings later on.
+            << d
+            << str1                             // a string after a number → the number can be extracted
+            << ' ' 
+            << str2;
+
+    cout << "\nFile written\n";
+    // We don’t need to close the file explicitly
+    //  → because, When the program terminates, the outfile object goes out of scope. This calls its destructor, which closes the file
+
+
+    // ► Writing Data: - - - - - - - - - - 
+    ifstream infile("outfiles/fdata.txt");      // create ifstream object
+    // The file is automatically opened when the object is created.
+    infile >> ch >> i >> d >> str1 >> str2;     // extract (read) data from 'ifstream' object
+
+    cout    << ch << endl
+            << i << endl
+            << d << endl
+            << str1 << endl
+            << str2 << endl;
+    
+    cout << endl;
+    
+
+    /// ■ Insertion/Extraction (char*) C-Style Strings: - - - - - -  
+    
+    // Many stream operations work more easily with char* strings.
+    
+    /* What if you need to extract a char* (C-Style) string with embedded blanks (spaces)?
+        But the extraction operator only recognizes spaces as delimeters!
+        → This is a benefit of 'getline()' where you can use another delimeter.
+    */
+
+    // Insertion (char* strings):
+    ofstream outfile2("outfiles/fdata_c_style_strings.txt");
+    
+    outfile2 << "I fear three, ancient Mariner!\n";
+    outfile2 << "I fear any skinny hand\n";
+    outfile2 << "And thou art long, and lank, and brown,\n";
+    outfile2 << "As is the ribbed sea sand.\n";
+    outfile2.seekp(0);                          // set file pointer from start of file 
+    //                                          // Or: outfile2.close();
+
+    // Extraction (char* strings):
+    const int MAX = 80;                         // size of buffer
+    char buffer[MAX];                           // char array buffer
+    ifstream infile2("outfiles/fdata_c_style_strings.txt");
+
+    while(!infile2.eof())                       // until end-of-file (The EOF is a signal sent to the program from the operating system when there is no more data to read)
+    {
+        infile2.getline(buffer, MAX);           // read a line -without the delimiting character (typically '\n')
+        cout << buffer << endl;
+    }
+
+    //or: while(infile2.good())                 // until any error encountered
+    //or: while(infile2)                        // until any error encountered
+    //  • Any stream object, such as infile, has a value that can be tested for the usual error conditions, including EOF.
+    //  → If any such condition is true, the object returns a 'zero' value. 
+    //  → If everything is going well, the object returns a 'nonzero' value.
+
+
+    /// ♦ Character I/O ♦ ///////////////////////////////////////////////////////////
+    // ► put(char) for writing:
+    string str =    "Time is a great teacher, but unfortunately "
+                    "it kills all its pupils.";
+
+    ofstream outfilechar("outfiles/fdata_chars.txt");
+    for (int i = 0; i < str.size(); i++)        // for each character
+        outfilechar.put(str[i]);                // write it to file
+
+    cout << "File written\n";
+    outfilechar.seekp(0);
+    
+
+    // ► get(char) for reading:
+    char _ch;
+    ifstream infilechar("outfiles/fdata_chars.txt");
+    while(infilechar)
+    {
+        infilechar.get(_ch);
+        cout << _ch;
+    }
+    cout << endl;
+    infilechar.close();                         //  closing stream explicitly: this invokes its destructor and closes the associated file (Note: streams are closed automatically when they go out of scope)
+    
+
+    // Another approach to reading is rdbuf():
+    infilechar.open("outfiles/fdata_chars.txt");    // you must open the file from the beginning, seekg(0) will not work with rdbuf()!        
+    cout << infilechar.rdbuf() << endl;
+    /*
+        rdbuf() is a member of the 'ios' class, it returns a pointer to the streambuf (or filebuf) object
+        associated with the stream object (ifstream object). This object contains a buffer that holds the
+        characters read from the stream, So you can use this pointer as a data object in its own right.  
+        • The rdbuf() function knows that it should return when it encounters an EOF.
+    */
+    
+
+    /// ♦ Binary I/O ♦ ///////////////////////////////////////////////////////////
+
+    /* If you're storing a large amount of numerical data it's more efficient to use binary I/O, 
+        → in which numbers are stored as they are in the computer's RAM memory, rather than as strings of charcters. 
+
+        ex. An int is stored in 4 bytes, whereas its text version might be "12345", requiring 4 bytes.
+            Similarly, a float is always stored in 4 bytes, while its formatted version might be “6.02314e13”, requiring 10 bytes. 
+
+        ■ write() and read() functions think about data in terms of bytes. They on't care how the data is formatted.
+            → They simply transfer a buffer full of bytes from and to a disk.
+            → Their parameters:
+                • The address of the data buffer    (must be cast, using reinterpret_cast, to type char*)
+                • The length in bytes               (not the number of data items in the buffer) 
+    */
+
+    int buff[MAX];
+    for (int i = 0; i < MAX; i++)
+        buff[i] = i;                            // fill buffer with data
+
+
+    // ► write:
+    ofstream os("outfiles/bdata.dat", ios::binary);     // You must use the mode bit: 'ios::binary' argument when working with binary data 
+                                                        // ... This is because the default, text mode, takes some liberties with the data which in turn makes a formatted text file more readable by DOS-based utilities such as TYPE.
+                                                        //      For example, in text mode the ‘\n’ character is expanded into two bytes before being stored to disk —a carriagereturn and a linefeed— 
+                                                        //      hence, every byte that happens to have the ASCII value 10 is translated into 2 bytes.
+    os.write(reinterpret_cast<char*>(buff), MAX*sizeof(int));       
+    // The reinterpret_cast operator: It changes the type of a section of memory without caring whether it makes sense, so it’s up to you to use it judiciously.
+    // You can also use reinterpret_cast to change pointer values into integers and vice versa. This is a dangerous practice, but one which is sometimes necessary.
+    os.close();                                 // must close the output stream
+
+    for (int i = 0; i < MAX; i++)
+        buff[i] = 0;                            // erase buffer
+    
+
+    // ► read:
+    ifstream is("outfiles/bdata.dat", ios::binary);
+
+    is.read(reinterpret_cast<char*>(buff), MAX*sizeof(int));
+
+    for (int i = 0; i < MAX; i++)
+        if (buff[i] != i)                       // check data
+            { cerr << "Data is incorrect\n";    return 1; }
+    
+    cout << "Data is correct\n";
+    
+    
+
+    /// ♦ Object I/O ♦ ///////////////////////////////////////////////////////////
+    
+    
     
     
     return 0;

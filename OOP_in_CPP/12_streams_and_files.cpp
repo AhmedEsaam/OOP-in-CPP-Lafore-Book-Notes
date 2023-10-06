@@ -204,8 +204,39 @@ public:
         cout << "Name: " << name << endl;
         cout << "Age: " << age << endl;
     }
-};
-    
+    void diskIn(string, int);                       // read from file
+    void diskOut(string);                           // write to file
+    static int diskCount(string);                         // return number of persons in file
+};  
+
+
+
+/// ♦ File I/O with Member Functions ♦ ////////////////////////////////////////////////
+void Person::diskIn(string fname, int perNum)
+{
+    ifstream infile;
+    infile.open(fname, ios::binary);
+    infile.seekg(perNum * sizeof(Person));          // move file 'get' pointer to the specific Person
+    infile.read((char *)this, sizeof(*this));       // read one Person
+}
+
+void Person::diskOut(string fname)
+{
+    ofstream outfile;
+    outfile.open(fname, ios::app | ios::binary);
+    outfile.write((char *)this, sizeof(*this));      // write one Person
+}
+
+int Person::diskCount(string fname)
+{
+    ifstream infile;
+    infile.open(fname, ios::binary);
+    infile.seekg(0, ios::end);                      // move 'get' pointer to end of file
+    return (int)infile.tellg() / sizeof(Person);    // calculate number of Person objects
+}
+
+
+
 
 
 int main()
@@ -930,6 +961,38 @@ int main()
     
 
     /// ♦ File I/O with Member Functions ♦ ////////////////////////////////////////////////
+
+    /// ■ Objects That Read and Write Themselves:
+    // This is a simple approach, and works well if there aren’t many objects to be read or written at once. 
+    Person per1;
+    string fname = "outfiles/personFile.dat";
+
+    // write to disk
+    do
+    {
+        cout << "\nEnter person's data:\n";
+        per1.getData();
+        per1.diskOut(fname);
+
+        cout << "\nDo another (y/n)? ";
+        cin >> ch;
+    } while(ch == 'y');
+
+    // print number of Person objects in file
+    int per_total = Person::diskCount(fname);
+    cout << "\nThere are " << per_total << " persons in file.\n";
+    
+    // read from disk
+    for (int i = 0; i < per_total; i++)
+    {
+        cout << "\nPerson " << i << endl;
+        per1.diskIn(fname, i);
+        per1.showData();
+    }
+    cout << endl;
+    
+    
+    /// ■ Classes That Read and Write Themselves:
 
         
     

@@ -67,7 +67,7 @@ int main()
 
     // ♦ Non-modifiable lvalues include :-
     // array names
-    // const objects
+    // const objects (obviously)
     // structs and unions that contain const objects
 
 
@@ -76,7 +76,7 @@ int main()
         ► is an expression that is not an l-value (cannot have a value assigned to it) and is capable of returning a constant expression or value.
         ► does not necessarily have any storage associated with it.
         ► has no identifiable location in memory (i.e. having an address).
-        ► can appear only on right but not on left hand side of an assignment operator(=).
+        ► can appear only on the right hand side for the assignment operator(=).
 */
 
     5;      "sifi";     0xF62C5605;     // literals: numbers, strings, addresses, ...etc.
@@ -103,7 +103,7 @@ int main()
 // _______________________
 /* rvalue → to lvalue: */
 
-    /// • the programming language has been designed to prohibit such conversions.
+    /// • the C++ programming language has been designed to prohibit such conversions.
         // int& vref = 10;          // Error: does not work, as the reference should point to an existing object in memory, but 10 is a numeric constant without a memory address.
 
 

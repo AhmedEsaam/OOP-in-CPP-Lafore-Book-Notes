@@ -5,10 +5,18 @@
 #include <string>
 #include <cstdlib>
 #include <process.h>        // for exit()
+#include <typeinfo>         // for typeid()
 
 using namespace std;
 
 // A 'stream' is a general name given to a flow of data.
+/* 
+    A stream is a sequence of bytes. 
+    In the NTFS file system, streams contain 
+    - the data that is written to a file, 
+    - and that gives more information about a file than attributes and properties. 
+        (For example, you can create a stream that contains search keywords, or the identity of the user account that creates a file.)
+*/
 
 /** Advantages of Streams:
     ► There are no such formatting characters (like %d, %f, ...) in streams, 
@@ -212,6 +220,9 @@ public:
 
 
 /// ♦ File I/O with Member Functions ♦ ////////////////////////////////////////////////
+
+// -------------------------------------------------------------------
+/// ■ Member functons that allow objects to Read and Write Themselves:
 void Person::diskIn(string fname, int perNum)
 {
     ifstream infile;
@@ -236,9 +247,178 @@ int Person::diskCount(string fname)
 }
 
 
+// -------------------------------------------------------------------
+/// ■ Classes That Read and Write Themselves:
+// let’s make a further assumption: that the objects stored in memory are different sizes.
+//  →  This situation typically arises when several classes are derived from a base class. 
+
+const int LEN = 32;                                 // maximum length of the last names
+const int MAXEM = 100; 
+
+enum employee_type {t_manager, t_scientist, t_laborer};                             // maximum number of employees
+
+class Employee
+{
+private:
+    char name[LEN];                                 // employee name
+    unsigned long number; 
+protected:                          // employee number
+    static int total;                               // current number of employees
+    static Employee* arrpEmp[];                     // array of pointers to Employees
+public:
+    virtual void getData()
+    {
+        cin.ignore(10, '\n');
+        cout << "\nEnter last name: ";          cin >> name;
+        cout << "\nEnter employee number: ";    cin >> number;
+    }
+    virtual void putData()
+    {
+        cout << "\n Name: " << name;
+        cout << "\n Employee number: " << number;
+    }
+    virtual employee_type getType();               // get type
+    static void add();                              // add an employee
+    static void display();                       // display all employee
+    static void read(string);                             // read from disk file
+    static void write(string);                            // write to disk file
+};
+
+// static variables
+int Employee::total;                                // current number of employees
+Employee* Employee::arrpEmp[MAXEM];                 // array of pointers to Employees
+
+
+// Manager class
+class Manager : public Employee
+{
+private:
+    char title[LEN];                                // "Executive Manager" etc.
+    double dues;                                    // golf club dues
+public:
+    Manager()
+    { Employee::arrpEmp[Employee::total++] = this; }
+    void getData()
+    {
+        Employee::getData();
+        cout << "\nEnter title: ";              cin >> title;
+        cout << "\nEnter golf club dues: ";     cin >> dues;
+    }
+    void putData()
+    {
+        Employee::putData();
+        cout << "\nTitle: " << title;
+        cout << "\nGolf club dues: " << dues;
+    }
+};
+
+
+// Scientist class
+class Scientist : public Employee
+{
+private:
+    int pubs;                                       // Number of publication
+public:
+    Scientist()
+    { Employee::arrpEmp[Employee::total++] = this; }
+    void getData()
+    {
+        Employee::getData();
+        cout << "\nEnter number of publications: ";     cin >> pubs;
+    }
+    void putData()
+    {
+        Employee::putData();
+        cout << "\nNumber of publications: " << pubs;
+    }
+};
+
+
+// Laborer class
+class Laborer : public Employee
+{ 
+public:
+    Laborer()
+    { Employee::arrpEmp[Employee::total++] = this; }
+};
+
+
+///////////// Functions definitions ///////////
+
+// return the type of 'this' object 
+employee_type Employee::getType()
+{
+    if (typeid(*this) == typeid(Manager))
+        return t_manager;
+    else if (typeid(*this) == typeid(Scientist))
+        return t_manager;
+    else if (typeid(*this) == typeid(Laborer))
+        return t_manager;
+    else
+        { cerr << "\nBad Employee type";    exit(1); }
+    
+    return t_manager;
+}
+
+// display all employees
+void Employee::display()
+{
+    for (int i = 0; i < total; i++)
+    {
+        cout << (i+1);
+        switch(arrpEmp[i]->getType())
+        {
+        case t_manager:     cout << ". Type: Mnager";       break;
+        case t_scientist:   cout << ". Type: Scientist";    break;
+        case t_laborer:     cout << ". Type: Laborer";      break;
+        default:            cout << ". Unknown type";
+        }
+        arrpEmp[i]->putData();                      // display employee data
+        cout << endl;
+    }
+}
+
+// write all current memory objects to file
+void Employee::write(string fname)
+{
+    int size;
+    cout << "\nWriting " << total << " employees.";
+    ofstream ouf;
+    employee_type etype;
+    
+    ouf.open(fname, ios::trunc | ios::binary);
+    if(!ouf)
+        { cerr << "\nCould not open input file";   return; }
+
+    // for every employee object ...
+    for (int i = 0; i < total; i++)                 
+    {
+        // ... get it's type
+        etype = arrpEmp[i]->getType();              
+        // write its type to file
+        ouf.write((char *)&etype, sizeof(etype));   
+
+        // find it's size
+        switch(etype)                               
+        {
+        case t_manager:     size = sizeof(Manager);     break;
+        case t_scientist:   size = sizeof(Scientist);   break;
+        case t_laborer:     size = sizeof(Laborer);     break;
+        default:            cerr << "\nBad Employee type";
+        }
+
+        // then, write it to file
+        ouf.write((char *)arrpEmp[i], size);        
+        if(!ouf)
+            { cerr << "\nCould write to file";  return; }
+    }
+}
 
 
 
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 int main()
 {
 
@@ -900,7 +1080,7 @@ int main()
     
     // ► writing an array to a file
     ofstream os_;
-    os_.open("outfiles/a:edata.dat", ios::trunc | ios::binary);
+    os_.open("outfiles/a:edata.dat", ios::trunc | ios::binary);         // 'edata.dat' is a stream of the file 'a', refer to: https://stackoverflow.com/questions/77240735/using-a-file-path-with-a-colon-in-windows-file-system
     if(!os_)
         { cerr << "\nCould not open output file";   exit(1); }
     
@@ -940,7 +1120,7 @@ int main()
     // -----------------------------------------------------------------------------------------------------    
     /// ■ Using the 'ios' error-status flags to find out more specific information about a file I/O error:
     ifstream file;
-    file.open("outfiles/a:test.dat");
+    file.open("outfiles/a:test.dat");                   // 'test.dat' is another stream of the file 'a'
 
     if(!file)
         cout << "\nCan't open file";
@@ -962,7 +1142,7 @@ int main()
 
     /// ♦ File I/O with Member Functions ♦ ////////////////////////////////////////////////
 
-    /// ■ Objects That Read and Write Themselves:
+    /// ■ Objects That Read and Write Themselves: - - - - - - - - -
     // This is a simple approach, and works well if there aren’t many objects to be read or written at once. 
     Person per1;
     string fname = "outfiles/personFile.dat";
@@ -992,7 +1172,8 @@ int main()
     cout << endl;
     
     
-    /// ■ Classes That Read and Write Themselves:
+    /// ■ Classes That Read and Write Themselves: - - - - - - - - -
+    //  It’s much faster—and the more objects there are the truer this is—to open the file once, write all the objects to it, and then close it.
 
         
     

@@ -459,7 +459,7 @@ public:
         total--;
         cout << "\nDestroying Object #" << id;       
     }
-    static void showTotal()
+    static void showTotal()     // it's not allowed to put 'const' in a static function declaration
     {
         cout << "\nTotal number of objects is " << total;
     }

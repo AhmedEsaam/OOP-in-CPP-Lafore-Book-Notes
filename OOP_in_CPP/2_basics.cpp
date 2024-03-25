@@ -280,6 +280,13 @@ int main(void)
     // Operators Precedence Summary:
         Expression > Unary > Arithmetic > Relational > Logical > Conditional > Assignment > Sequential
 
+    // Assignment Expression has a value:
+        int x, y, z;
+        x = y = z = 0; // '=' excutes from right to left
+        // (z = 0) value is 0
+        // then (y = 0) value is 0
+        // then x = 0
+    
     //  Operators are divided into:
             Unary Operators:    like '!' NOT    : takes one operand.
             Binary Operators:   like '+' Plus   : takes two operands.
@@ -335,5 +342,17 @@ int main(void)
         (regardles of the precedence between left and right operators of && or || .)
         // after evaluating left operand, right operand is evaluated (if needed), and then the logical operator is evaluated.
     */
+
+    /* This short-circuit behavior can be useful in certain situations to improve efficiency or avoid errors. 
+        For example, it allows you to safely use potentially null pointers in conditions without risking a runtime error: 
+        -ChatGPT
+    */
+    /*
+        if (ptr != nullptr && ptr->isValid()) 
+        {
+
+        }
+    */
+
     return 0;
 }

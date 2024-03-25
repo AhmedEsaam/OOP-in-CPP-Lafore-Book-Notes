@@ -5,7 +5,7 @@
 using namespace std;
 
 /* Why we need Loops & Decisions?
-    • Most programs (like many humans) decide what to do in response to changing circumstances.
+    • Most programs -like many humans- decide what to do in response to changing circumstances.
         The flow of control jumps from one part of the program to another, depending on calculations
         performed in the program.
     • Program statements that cause such jumps are called control statements.
@@ -112,13 +112,13 @@ int main(void)
     }                  // display results
     
     cout << "\nWords =" << wdcount << endl
-         << "Letters =" << (chcount - 1) << endl;
+         << "Letters =" << (chcount - 1) << endl;   // excluding 'Enter'
 
     /* ASSIGNMENT EXPRESSIONS HAVE A VALUE:
         //  while ((ch = getche()) != '\r')
 
         This works because the entire assignment expression takes on the value used in the assignment.
-        That is, if getche() returns ‘a’, then not only does ch take on the value ‘a’, but the expression
+        That is, if getche() returns ‘a’, then not only does ch takes on the value ‘a’, but the expression
         (ch=getche()) also takes on the value ‘a’
     */
     int x, y, z;
@@ -138,7 +138,8 @@ int main(void)
     for (int i = 2; i < 80 * 25 - 1; i++)
     {
         cha = WHITE; // Prime
-        if (i == 4) cha = GRAY;
+        if (i == 4) 
+            cha = GRAY;
         
         for (int j = 2; j < i / 2; j++)
         {

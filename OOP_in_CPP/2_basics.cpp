@@ -17,16 +17,17 @@ int main(void)
 {
     cout << "hello!" << endl;
     cout << geo::circumf(3.2) << endl;
-    int var; // declaration (as we now know var) and definition (as var is assigned a memory space)
+    int var; // declaration (as we now know the "var" name) and definition (as var is assigned a memory space: int)
     long longvar0 = 74466L;
+
     __int16 xx = 5;
     __int32 yy = 7;
     __int64 zz = 9;
     int d = 5, e = 6, f = 7;
-    wchar_t c[] = L"å"; // wchar_t size 4 bytes (32-bit)
+    wchar_t c[] = L"å"; // wchar_t (wide character) size: 4 bytes (32-bit)
     wcout << c << endl;
-    cout << "jk\ba" << endl; // /b : backspace
-    cout << "\xDC" << endl;  // /xFF : to put ASCII characters above 127
+    cout << "jk\ba" << endl; // \b : backspace
+    cout << "\xDC" << endl;  // \xFF : to put ASCII characters above 127
     // cin >> var >> x;
     cout << var << xx << endl;
 
@@ -42,7 +43,7 @@ int main(void)
         int                 (system dependent)
         long        –2,147,483,648      2,147,483,647       4-byte
 
-        **(Type int, although twice as large, is accessed faster than type short in 32-bit systems)
+        **(Type int -although twice as large- is accessed faster than type short in 32-bit systems (4-bytes).)
     */
     const long LONGVAR = 74466L; // L: for 'long' when the number is integer (without a floating point)
 
@@ -65,28 +66,28 @@ int main(void)
         long double >> compiler dependent (but is often same as double)
     */
     const float PI = 3.141F;                  // F: for 'float'
-    const double DOUBLEVAR = 5.545;           // constant floating point numbers are double by default
+    const double DOUBLEVAR = 5.545;           // constant floating point numbers are 'double' by default
     const long double LONGDOUBLEVAR = 1.556L; // L: for 'long double'
 
     // exponential notation
     const float F1 = 1000000000;
-    const float F1_ = 1.0E9; // *10^9
+    const float F1_ = 1.0E9;        // 1*10^9
 
     const float F2 = 3652.4664;
     const float F2_ = 3.6524664E3;
 
     const float F3 = 0.0000635239;
-    const float F3_ = 6.35239E-5;
+    const float F3_ = 6.35239E-5;   // 6.35239 * 10^-5
 
     /* Floating-point Notation: */
     double db = 166.9476112;
     cout << db << endl;
     // fixed        : write floating-point values in fixed-point notation.
-    cout << "fixed: " << fixed << db << endl; // 166.947611
+    cout << "fixed: " << fixed << db << endl;               // 166.947611
     // scientific   : write floating-point values in scientific notation.
-    cout << "scientific: " << scientific << db << endl; // 1.669476e+002
+    cout << "scientific: " << scientific << db << endl;     // 1.669476e+002
     // hexfloat     : write floating-point values in hexadecimal format.
-    cout << "hexfloat: " << hexfloat << db << endl; // 0xa.6f296a5c952c8p+4
+    cout << "hexfloat: " << hexfloat << db << endl;         // 0xa.6f296a5c952c8p+4
     // defaultfloat : write floating-point values in default floating-point notation.
     cout << "defaultfloat: " << defaultfloat << db << endl; // 166.948
 
@@ -103,9 +104,9 @@ int main(void)
     cout << "fixed with precision (2): " << fixed << db << endl;           // 166.95 (2 digits after the '.')
     cout << "scientific with precision (2): " << scientific << db << endl; // 1.67e+002 (2 digits after the '.')
 
-    // we can also use (must include <iomanip>):
-    cout << fixed << setprecision(4) << db << endl;        // 4 dicimal places are displayed // 776.6988
-    cout << defaultfloat << setprecision(4) << db << endl; // all digits displayed are 4 // 776.7
+    // For the same purpose, we can also use... (must include <iomanip>):
+    cout << fixed << setprecision(4) << db << endl;        // 4 dicimal places are displayed    // 776.6988
+    cout << defaultfloat << setprecision(4) << db << endl; // all digits displayed are 4        // 776.7
 
     // make it a function-like macro
 #define FIXED_PREC(num, prec) std::fixed << std::setprecision(prec) << num
@@ -113,11 +114,11 @@ int main(void)
 
     std::cout << defaultfloat; // return to the 'defaultfloat' format
 
-    // another example:
+    // another example: ('setiosflags' is a handy feature to set how coming floating point numbers will appear then you can reset to normal)
     cout    << setiosflags(ios::fixed)          // not exponential
-            << setiosflags(ios::showpoint)      // always use point
+            << setiosflags(ios::showpoint)      // always use point (i.e.: 1.0)
             << setprecision(2)                  // digits to right
-            << setw(10)                         // field width
+            << setw(10)                         // field width (digit places)
             << 166.9476112
             << endl;
 
@@ -131,7 +132,7 @@ int main(void)
     cout << answer << endl;
 
     /* BOOLEAN
-        bool    >> 1-bit (but in practice compilers often store them as 1 byte because a byte can be quickly accessed)
+        bool    >> 1-bit (but in practice compilers often store them as 1 byte because a byte is quicker to process and access)
     */
     bool b = true;
 
@@ -139,7 +140,7 @@ int main(void)
 
     /* Order of Data Types:
 
-        long double         Highest
+        long double         Highest (converted to when encountered with a lower type)
         double
         float
 
@@ -157,12 +158,12 @@ int main(void)
     int count = 2;
     float avgWeight = 1.2F;
     double totalWeight = count * avgWeight; // 2.4
-    cout << "totalWeight= " << totalWeight << endl;
+    cout << "totalWeight = " << totalWeight << endl;
     /*
         When two operands of different types are encountered in the same expression:
             >> the lower-type variable is converted to the type of the higher-type variable.
 
-        Thus in MIXED, the int value of 'count' is converted to type float and stored in
+        Thus, in MIXED, the int value of 'count' is converted to type float and stored in
             a temporary variable before being multiplied by the float variable avgWeight.
 
         The result (still of type float) is then converted to double
@@ -172,7 +173,7 @@ int main(void)
     /* EXPLICIT CASTING:
 
         They are a controlled way of evading type safety
-         > (which means making sure that variables don’t change types by mistake)
+         > (which means making sure that variables do not change types by mistake)
     */
     int anIntVar = 105;
     char aCharVar0 = static_cast<char>(anIntVar);
@@ -183,11 +184,10 @@ int main(void)
     /*
         • One problem with these last two approaches is that they are hard to see;
             >> the syntax blends into the rest of the listing.
-        • They are also hard to search for using a Find operation with your source code editor.
+        • They are also hard to 'search for' using a Find operation with your source code editor.
 
         ► The new format solves this problem: static_cast is easy to see and easy to search for.
-        ► These old casts still work, but their use is discouraged (or deprecated, to use the technical
-        term).
+        ► These old casts still work, but their use is discouraged (or deprecated -to use the technical term.)
     */
 
     int intVar = 1500000000;                          // 1,500,000,000
@@ -197,11 +197,16 @@ int main(void)
     intVar = (static_cast<double>(intVar) * 10) / 10; // or <__int64>
     cout << "intVar = " << intVar << endl;            // right answer
 
+    /* However, in this situation, you can divide before multiply instead to avoid conversion */
+    int intVar2 = 1500000000;
+    intVar2 = (intVar2 / 10) * 10;                      // intermediate value: (intVar * 10) is too large
+    cout << "intVar2 = " << intVar2 << endl;            // wrong answer
+    
     //................................................................
 
     /* MANIPULATORS */
-    // endl:
-    // new line and it flushes the output buffer.
+
+    // endl:    new line and it flushes the output buffer.
     cout << "Hi!" << endl;
 
     // setw(n):
@@ -211,11 +216,10 @@ int main(void)
     cout << setw(4) << "Num1" << setw(12) << 64634634 << endl
          << setw(4) << "NUm2" << setw(12) << 5645 << endl;
 
-    // setprecision(x):
-    // for floating point numbers
+    // setprecision(x):     for floating point numbers
     double db1 = 776.69878646;
-    cout << fixed << setprecision(4) << db1 << endl;        // 4 dicimal places are displayed // 776.6988
-    cout << defaultfloat << setprecision(4) << db1 << endl; // all digits displayed are 4 // 776.7
+    cout << fixed << setprecision(4) << db1 << endl;        // 4 dicimal places are displayed   // 776.6988
+    cout << defaultfloat << setprecision(4) << db1 << endl; // all digits displayed are 4       // 776.7
 
     /* HEADER FILES:
         Functions in your source file need to know ...
@@ -249,7 +253,7 @@ int main(void)
             <   >   <=  >=
             ==  !=
         _______________________________
-        ↓ Logical Operaors          L→R
+        ↓ Logical Operators          L→R
 
             &       ┐
             ^       │   Bitwise
@@ -260,21 +264,23 @@ int main(void)
         _______________________________
         ↓ Conditional Expression    L→R
 
-            (?   :)
+                (?   :)
+            ternanry operator
         _______________________________
         ↓ Assignment Operators      R→L
 
             =   *=  /=  %=  +=  -=  <<= >>= &=  ^=  |=
         _______________________________
         ↓ Sequential Evaluation     L→R
-            ,   (ex.: int x, y;)
+              ,   (ex.: int x, y;)
+            comma
         _______________________________
 
 
-    // Summary:
+    // Operators Precedence Summary:
         Expression > Unary > Arithmetic > Relational > Logical > Conditional > Assignment > Sequential
 
-    //  Operators are divide into:
+    //  Operators are divided into:
             Unary Operators:    like '!' NOT    : takes one operand.
             Binary Operators:   like '+' Plus   : takes two operands.
             Ternary Operator:   Only ( ? : )    : takes three operands.
@@ -289,7 +295,7 @@ int main(void)
     if (x % 7 == 0 && y % 7 == 0)
         ; // arithmetic > relational > logical
 
-    // example (* and % : have equal precedence → from left to right):
+    // example (* and % : have equal precedence, hence → from left to right):
     x = 2 * 3 % 4; // * before %   // x ← 2
     y = 2 % 3 * 4; // % before *   // y ← 8
     cout << "x = " << x << ",\ny = " << y << endl;
@@ -314,19 +320,20 @@ int main(void)
 
     cout << ++g << " " <<  ++g << endl;
     // Since C++17 (GCC 7) the functions are guaranteed to be called left-to-right,
-    // Prior to C++17 the order of function calls was unspecified, meaning that
-    //      they may be called in any order (and this order does not need to be the same 
-    //      on repeated invocations).
+    // Prior to C++17 the order of function calls was unspecified, meaning that...
+    //      ...they may be called in any order (and this order does not need to be the same on repeated invocations).
 
 
     // Beware of the short circuit evaluation of && and ||:
     /*
         • (x and y) is equivalent to (if x then y else x)
         • (x or y) is equivalent to (if x then x else y)
-        In either case, x is only evaluated once.
-        (regardles of the precedence between left and write operands of && or || .)
-        // after evaluating left operand, right operand is evaluated an then the logical operator is evaluated.
+        (y can be not evaluated)
+        
+        // Precedence between x and y:
+        In either case, x is always evaluated first.
+        (regardles of the precedence between left and right operators of && or || .)
+        // after evaluating left operand, right operand is evaluated (if needed), and then the logical operator is evaluated.
     */
-    
     return 0;
 }

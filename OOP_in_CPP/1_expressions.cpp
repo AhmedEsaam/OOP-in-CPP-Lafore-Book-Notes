@@ -104,7 +104,8 @@ int main()
 /* rvalue → to lvalue: */
 
     /// • the C++ programming language has been designed to prohibit such conversions.
-        // int& vref = 10;          // Error: does not work, as the reference should point to an existing object in memory, but 10 is a numeric constant without a memory address.
+        // int& vref = 10;          // Error: does not work, as the reference should point to an existing object in memory, 
+                                    // but 10 is a numeric constant without a memory address.
 
 
     /// → What if you want to make a function that can take a reference or a vlaue?
@@ -137,7 +138,7 @@ int main()
 
 
         /* Under the hood,
-            the compiler creates an hidden variable for you (i.e. an lvalue) where to store the original literal constant, 
+            the compiler creates a hidden variable for you (i.e. an lvalue) where to store the original literal constant, 
             and then bounds that hidden variable to your reference.
         */
 
@@ -159,14 +160,14 @@ int main()
 /* ♣ lvales and rvalues as operands ♣ */////////////////////////////////////
 
 // ♦ Operators that require lvalues as their operand (argument) :-
-// '='          The built-in assignment operator.   // as its left operand
+// '='          The built-in assignment operator (as its left operand.)
 // '&'          The built-in address-of operator.
 // '++', '--'   increment and decrement
 
-// ♦ almost other operators require rvalues.
+// ♦ almost all other operators require rvalues.
 
 /*
-    The rules are not as strict for user-defined operators;
+    The rules are not as strict for user-defined operators...;
     → Any object, including an rvalue, can be used to call member functions, 
     (including overloaded =, &, ++, and -- operators.)
 */

@@ -33,15 +33,15 @@ public:
 };
 
 /* Data Hiding (private):
-     data is concealed within a class so that it cannot be accessed mistakenly
+    Data is concealed within a class so that it cannot be accessed mistakenly
         by functions outside the class.
 */
 
 /* Functions:
-    • (The functions are not definitions in the sense that memory is set aside
-        for the function code; this doesn’t happen until an object of the class is created.
+    • (The functions are not definitions in the sense that memory is set aside for the function code; 
+        this doesn’t happen until an object of the class is created.
 
-    • Member functions defined inside a class this way are created as inline
+    • ** Member functions defined inside a class this way are created as inline
         functions by default.
 
     • All the objects in a given class use the same member functions.
@@ -59,11 +59,9 @@ private:
 
 public:
     counter(int i) : count(0), id(i)
-    { /*empty body*/
-    }
-    ~counter() // no argyments (there's only one way to destroy an object)
-    {          /*empty body*/
-    }
+    {   /*empty body*/  }
+    ~counter() // no arguments (there's only one way to destroy an object)
+    {   /*empty body*/  }
     void inc_count()
     {
         count++;
@@ -76,12 +74,11 @@ public:
 
 /*
     • Why not Members in the body of the constructor?
-        The reasons are complex, but have to do with the fact that members initialized
-        in the initializer list are (given a value before the constructor even starts to execute).
+        The reasons are complex, but have to do with the fact that (members initialized
+        in the initializer list are given a value before the constructor even starts to execute).
 
         >> This is important in some situations:
-            For example, the initializer list is the only way to initialize
-            (const member data and references).
+            For example, the initializer list is the only way to initialize (const member data and references).
 
     • Actions more complicated than simple initialization must be carried out in the constructor
         body, as with ordinary functions
@@ -93,7 +90,7 @@ private:
     int feet;
     float inches;
     mutable int ID; 
-
+ 
 public:
     // constructor with no arguments
     Distance() : feet(0), inches(0.0), ID(0)
@@ -120,8 +117,8 @@ public:
     {
         this->ID = id;
         // this function can be called with const Distance object.
-        // Putting const means this function can be used with const objects,
-        //      If const does not exist: we cannot pass const object as 'this' as an implicit argumnet.
+        // Putting 'const' means this function can be used with const objects,
+        //      If 'const' does not exist: we cannot pass a const object as an implicit argumnet (this.)
         //      It must be passed as a const object ('const this'). 
     }
 
@@ -159,8 +156,8 @@ Distance Distance::add_dist(const Distance &d2) const
     return temp;
 }
 /*
-    This function has:
-        >> Direct access    (Using the member names alone):
+    Any member function has:
+        >> Direct access    (Using the member names only):
             → to all the members, whether private or public, of that object.
         >> Indirect access  (using the object name and the member name):
             → to other objects of the same class that are passed as arguments.
@@ -170,7 +167,7 @@ Distance Distance::add_dist(const Distance &d2) const
 /* CONST MEMBER FUNCTION */
 /*
     Member functions that do nothing but acquire data from an object are obvious candidates
-        for being made const, because they don’t need to modify any data
+        for being made const, because they don’t need to modify any data.
 
     Making a function const:
         >> helps the compiler flag errors.
@@ -204,7 +201,7 @@ Distance Distance::add_dist(const Distance &d2) const
     • In most situations programmers don’t use a struct this way.
         >> They use structures: to group only data,
         >> and classes: to group both data and functions.
-*/
+*/ 
 
 class foo
 {
@@ -227,11 +224,11 @@ private:
 /* STATIC CLASS DATA */
 /*
     • If a data item in a class is declared as static,
-         only one such item is created for the entire class.
+        only one such item is created for the entire class.
 
     • It's useful when all objects of the same class must share
         a common item of informatio.
-        .. while a normal static variable is used to retain information
+        .. While a normal static variable is used to retain information
             between calls to a function,
         .. static class member data is used to share information
             among the objects of a class.
@@ -240,8 +237,7 @@ private:
 
     • It has characteristics similar to a normal static variable:
         >>  It is visible only within the class.
-        >>  Its lifetime is the entire program.
-        >>  It continues to exist even if there are no objects of the class
+        >>  Its lifetime is the entire program and continues to exist even if there are no objects of the class.
 */
 
 class car
@@ -281,7 +277,7 @@ int car::count = 0; // *definition* of count
         • Putting the definition of static member data outside the class also
             >> Serves to emphasize that the memory space for such data is allocated
                 only once, before the program starts to execute.
-            >> And that one static member variable is accessed by an entire class;
+            >> And that one static member variable is accessed by an entire class objects;
 
         • WARNING !!
             If you include the declaration of a static variable but forget its definition:
@@ -353,11 +349,12 @@ int main(void)
     cout << "count is " << car1.getcount() << endl;
     cout << "count is " << car2.getcount() << endl;
     cout << "count is " << car3.getcount() << endl;
+    // all car objects have the same count value (3) despite for example, when car1 was created, the count was 1.
 
     //////////// const objects
     /*
         - These objects can use only any const member functions.
-            (because they’re the only ones that guarantee not to modify it.)
+            (because they’re the only ones that are guaranteed not to modify it.)
         - And they cannot use any non-const function.
             (you can’t modify it.)
 
@@ -374,20 +371,20 @@ int main(void)
 
     // const objects with mutable fields
     /*
-        - But, the object encompasses a number if different data members, 
+        - But, the object encompasses a number of different data members, 
         and declaring a const object means that all its data members are const.
         • Creating an object where some of its data members are const and some are mutable 
             is not possible using only this syntax.
-        • C++ provides the 'mutable' keyword to mark certain data members to still can be mutated
-            when the oject containing it is const. 
+        • C++ provides the 'mutable' keyword to mark certain data members that can be mutated
+            when the containing oject is const. 
     */
     const Distance mut(11, 5.2, 2);
-    // mut.setfeet(5);      // error, mut is a const.
+    // mut.setfeet(5);      // error, 'mut' is a const.
     mut.setID(3);           // this is ok.
 
     /*
         - This object is said to have 'logical constness'. 
-        That means that in theory it can’t be modified, but in practice it can, in a limited way.
+        This means that -in theory- it can not be modified, but in practice it can be, in a limited way.
         
         - In a non-const object, of course, both attributes could be modified.
     */
@@ -406,5 +403,5 @@ int main(void)
     
     What to include in a class?:
         •  you put into this class the data items that represent the value of the object, 
-        • and also the functions to set value, retrieve it, display it, compare it, and so on.
+        • and also the functions to (set) value, retrieve it (get), display it (show), compare it, and so on.
 */

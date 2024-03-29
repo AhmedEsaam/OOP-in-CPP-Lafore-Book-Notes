@@ -257,7 +257,7 @@ are stored on the heap */
 int x;
 int &setx();
 
-#if 1
+#if 0
 int main(void)
 {
     setx() = 92;
@@ -305,11 +305,24 @@ void aFunc(int &a, const int &b) // definition
 
 /* Note:
     If you want to pass a const variable to a function as a 'reference' argument, you don’t have a
-    choice but to declare it as 'const' in the function declaration.
+    choice but to declare it with the 'const' qualifier in the function declaration.
     
-    (There’s no problem passing a const argument by 'value', because the function can’t modify the original variable anyway, 
+    (There’s no problem passing a const argument by 'value' without using 'const' in the declaration, 
+    because the function cannot modify the original variable anyway, 
     but passing it by 'reference' is just passing an alias of the original variable with the same type.)
 */
+const int f = 5;
+void func(int f_)
+{ 
+    cout << f << endl;
+}
 
+#if 1
+int main()
+{
+    func(f);
+    return 0;
+}
+#endif
 
 

@@ -49,14 +49,13 @@ void display(double funsales[DISTRICTS][MONTHS])
 class Stack
 {
 private:
-    static const int MAX = 10; // some compilers doesn't allow this construction
-    // enum { MAX = 10 };       // (non-standard syntax): makes 'MAX' definition contained
-    //   entirely within the class.
+    static const int MAX = 10;  // some compilers doesn't allow this construction
+    // enum { MAX = 10 };       // (non-standard syntax): makes 'MAX' definition contained entirely within the class.
     int st[MAX];
     int top;
 
 public:
-    Stack() : top(-1){};
+    Stack() : top(-1){}
     void push(int var)
     {
         st[++top] = var;
@@ -79,14 +78,14 @@ public:
         >> However, the renegade data will probably be written on top
             of other data or the program code itself.
 
-        →  So, it is up to the programmer to deal with the array bounds-checking.
+        →  **So, it is up to the programmer to deal with the array bounds-checking.
 */
 
 
 
 /* EXAMPLE: Arrays of Cards */
 
-enum Suit { clubs, diamonds, hearts, spades};
+enum Suit { clubs, diamonds, hearts, spades };
 const int jack = 11;
 const int queen = 12;
 const int king = 13;
@@ -99,7 +98,7 @@ private:
     Suit suit;
 public:
     void set(int n, Suit s)
-    { suit = s; number = n; }
+    { number = n; suit = s; }
 
     void display();
 };

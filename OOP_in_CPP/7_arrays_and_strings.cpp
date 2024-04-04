@@ -126,11 +126,19 @@ void Card::display()
     }
 }
 
+void display_deck(Card deck[52])
+{
+    for (int i = 0; i < 52; i++)
+    {
+        deck[i].display(); cout << "  ";
+        if( !((i+1) % 13) ) cout << endl;   // newline every 13 cards
+    }
+}
 
 /************************************* STRINGS ***************************************/
 /*
     There are two kinds of strings are commonly used in C++:
-    • C-strings (arrays of type char), (<cstring> library provides useful functions to handle these)
+    • C-strings (arrays of type char): <cstring> library provides useful functions [strlen(s), strcpy(s_dest, s), strcat(s1, s2)] to handle these.
     • and strings that are objects of the standard C++ string class.
 */
 
@@ -159,10 +167,11 @@ public:
 
 /* Note:
     There is a potential defect in this class that:
-        - all String objects occupied the same fixed amount of memory.
-        • A string shorter than this fixed length wasted memory,
-        • and a longer string —if one were mistakenly generated— could crash the system 
-            by extending beyond the end of the array.
+        • All String objects occupies the same fixed amount of memory.
+        • And, there is no bounds checking;
+            - A string shorter than this fixed length wastes memory,
+            - and a longer string —if one were mistakenly generated— could crash the system 
+                by extending beyond the end of the array.
 */
 
 
@@ -178,7 +187,7 @@ public:
 */
 
 /*
-    This class improves on the traditional Cstring in many ways:
+    This class improves on the traditional C-strings in many ways:
         • You no longer need to worry about creating an array of the right size to hold string variables.
         • The string class assumes all the responsibility for memory management.
         • The string class allows the use of overloaded operators.
@@ -189,7 +198,7 @@ public:
 int main(int argc, char const *argv[])
 {
     const int SIZE = 6;
-    double cars[SIZE]; // all-uppercase name reminds us that the variable cannot be modified in the program.
+    double cars[SIZE]; // all-uppercase names reminds us that the variable cannot be modified in the program.
     /*
         Using a variable (instead of a number, such as the 6 used in the last example)
             >> makes it easier to change the array size:
@@ -212,7 +221,7 @@ int main(int argc, char const *argv[])
                                        {161.66, 516.6},
                                        {612.54, 622.9}};
 
-    display(sales); // this is passing by address
+    display(sales); // *this is passing by address
 
 
     /* ARRAYS AS CLASS MEMBERS */////////////////////////////////
@@ -227,11 +236,11 @@ int main(int argc, char const *argv[])
     cout << s1.pop() << endl;
 
     s1.push(5);
-    // cout << "s[" << s1.get_top() << "]: ";
-    // cout << s1.pop() << endl;
+    cout << "s[" << s1.get_top() << "]: ";
+    cout << s1.pop() << endl;
 
-    cout << "s[" << s1.get_top() << "]: " << s1.pop() << endl; // Left to right order of expression evaluation is present from C++17 (GCC7) onwards
-
+    // Left to right order of expression evaluation is present from C++17 (GCC7) onwards:
+    // cout << "s[" << s1.get_top() << "]: " << s1.pop() << endl;
     
     /* EXAMPLE: Arrays of Cards *////////////////////////////////
     Card deck[52];
@@ -246,11 +255,7 @@ int main(int argc, char const *argv[])
 
     // Display ordered deck
     cout << "\nOrdered deck:\n";
-    for (i = 0; i < 52; i++)
-    {
-        deck[i].display(); cout << "  ";
-        if( !((i+1) % 13) ) cout << endl;   // newline every 13 cards
-    }
+    display_deck(deck);
 
     // Shuffle cards
     srand(time(NULL));  // seed random numbers with time
@@ -266,19 +271,16 @@ int main(int argc, char const *argv[])
 
     // Display shuffled deck
     cout << "\nShuffled deck:\n";
-    for (i = 0; i < 52; i++)
-    {
-        deck[i].display(); cout << "  ";
-        if( !((i+1) % 13) ) cout << endl;   // newline every 13 cards
-    }
+    display_deck(deck);
 
 
-    /* C STRINGS *///////////////////////////////////////////
+
+    /* C STRINGS *///////////////////////////////////////////////////////////////////////////////////////////////////
     const int MAX = 80;
     char str[MAX];
     cout << "\nEnter a string: ";
-    cin >> setw(MAX) >> str;    // no more than MAX chars (19 chars + the NUll)
-                                // (as normally the compiler won't check if the size has been passed)
+    cin >> setw(MAX) >> str;    // no more than MAX chars (19 chars + the NUll);
+                                // ...(as normally the compiler won't check if the size has been passed)
                                 // Note: extraction operator >> considers a space to be a terminating character. 
     cout << "You entered: " << str << endl;
 
@@ -292,8 +294,7 @@ int main(int argc, char const *argv[])
     cout << "\nEnter a string in multible lines: \n";
     cin.ignore();
     cin.get(str, MAX, '$');     // stops reading until entering '$' or exceeding the size of the array 'MAX'
-    cout << "You entered: " << str << endl;
-
+    cout << "You entered: \n" << str << endl;
     // Initialization
     char str2[] =   "Farewell! thou art too dear for my possessing. ";
 
@@ -306,7 +307,7 @@ int main(int argc, char const *argv[])
 
     // C-string library functions:
     /* 
-        • There are no string operators built into C++.
+        • There are no string operators built into C++ for C-Strings.
         - But, C-strings are usually be manipulated using library functions.
             (Fortunately there are many such functions.)
     */
@@ -325,7 +326,7 @@ int main(int argc, char const *argv[])
     int ch_indx = pch - str1;
 
 
-    // String class (made up)
+    // String class (the made up one)
     String st1("Hi, ");
     String st2 = "all!";
     String st3;
@@ -334,7 +335,12 @@ int main(int argc, char const *argv[])
     cout << "st3 = "; st3.display(); cout << endl;
     
 
-    /* STANDARD C++ STRING CLASS *//////////////////////////
+
+    /* STANDARD C++ STRING CLASS *//////////////////////////////////////////////////////////////////////////////////////
+    /* Note:
+            •• string objects are not terminated with a null or zero as C-strings are. Or atleast it's not countable when
+            using .size() or .length() functions
+    */
     /// Initialization....................
     string ss1("Man");
     string ss2 = "Beast";
@@ -343,13 +349,14 @@ int main(int argc, char const *argv[])
     /// input/output......................
     string full_name, address, greeting("Hello, ");
     cout << "Enter your full name: " << endl;
+    cin.ignore(2);
     getline(cin, full_name);    // getline(cin, str) handles embedded blanks
     greeting += full_name;
     cout << greeting << endl;
 
-    cout << "Enter your address in multible lines (terminate by $): " << endl;
+    cout << "Enter your address in multible lines (terminated by $): " << endl;
     getline(cin, address, '$'); // terminates readng when reaching a delimiter '$', deault is '\n'
-    cout << "Your address: " << address << endl;
+    cout << "Your address: \n" << address << endl;
     
     /// Operators overloading.............
     // assign
@@ -393,7 +400,7 @@ int main(int argc, char const *argv[])
     n = ss4.find_last_not_of("aeiouAEIOU");     // looks for the last char that is NOT one of the given string
     cout << "last consonant at " << n << endl;
 
-        //* All these functions return –1 if the target is not found
+                                                //* All these functions return –1 if the target is not found
     
     // Modifying/Manipulating
     string ss5("Quick! Send for Count Graystone.");
@@ -403,8 +410,8 @@ int main(int argc, char const *argv[])
     ss5.replace(9, 5, ss6);         // replace "Count" with "Lord"
     ss5.replace(0, 1, "s");         // replace 'S' with 's'
     ss5.insert(0, ss7);             // insert "Don't " at beginning
-    ss5.erase(ss5.size()-1, 1);     // remove '.'
-    ss5.append(3, '!'); 
+    ss5.erase(ss5.size()-1, 1);     // remove '.' (the last character)
+    ss5.append(3, '!');             // append 3 of '!'
 
     //* An algorithm to replace multiple instances of a substring with another string
     int x = ss5.find(' ');          // find a space
@@ -417,18 +424,20 @@ int main(int argc, char const *argv[])
 
     // Comparing
     int cn = ss6.compare(1, 2, ss7, 1, 2);  // comapres ss6 from index 1 for 2 characters with ss7 from index 1 for 2 characters;
+    cout << cn << endl;
 
     // Substring
     cout << ss7.substr(0, 2) << endl;       // returns substring from index 0 for 2 characters
 
     // Accessing
-    cout << ss7.at(2) << endl;  // It’s safer to use instead of the [] operator, 
-                                // → as it causes the program to stop if you use an out-of-bounds index,
+    cout << ss7.at(2) << endl;  // It’s safer to use this instead of the [] operator, 
+                                // → as 'at()' causes the program to stop if you use an out-of-bounds index,
                                 // (It actually throws an exception.)
     
     // Length/size
     int size;
     size = ss7.length();
+    cout << size << endl;
     size = ss7.size();
     cout << size << endl;
     
@@ -442,17 +451,13 @@ int main(int argc, char const *argv[])
     char charray[20];
     ss8.copy(charray, siz, 0);  // arguments: Ptr to char array, Number of chars to copy, Position of the 1st char to copy
     charray[siz] = 0;           // terminate with '\0'
-        // we can also use c_str() or data() functions which both use pointers.
+                                // • We can also use c_str() or data() functions which both use pointers.
 
     /*
         string member functions we’ve discussed have numerous variations in the numbers and types of arguments they take. 
         (Consult your compiler’s documentation for details.)
     */
 
-    /* 
-        Note:
-            •• string objects are not terminated with a null or zero as C-strings are.
-    */
 
 
     return 0;

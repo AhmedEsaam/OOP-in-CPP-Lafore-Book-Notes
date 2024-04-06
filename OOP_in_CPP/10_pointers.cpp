@@ -14,7 +14,7 @@ using namespace std;
         we move the pointers to the objects. 
         ► This eliminates the need to shuffle the objects around in memory,
             which can be very time-consuming if the objects are large.
-        ► It could also, if we wanted, allow us to keep multiple sorts in memory at the same time
+        ► It could also, if we wanted, allows us to keep multiple sorts in memory at the same time
             without storing the objects multiple times 
 */
 /** Note:
@@ -63,7 +63,7 @@ public:
     obj1 = obj2; actually copies that pointer - so there is two pointers to the same allocated memory.
     - The problem is deleting one (deallocating that memory) actually leaves the other pointer dangling.
     = And this can be subtle, because objects can be deleted in nonobvious ways, 
-        such as when a function in which a local object has been created returns.
+        such as when a function -in which a local object has been created- returns.
 */
 
 
@@ -319,7 +319,7 @@ int main()
         Array name is a pointer constant (a non-modifiable lvalue) NOT a pointer variable,
         Which means that it is the address where the system has chosen to place your array.
         intArr++;  is like  0x36466631++;
-        But intArr[i] is an lvalue as it is *(intArr + i)
+        But intArr[i] is an lvalue because, it is: *(intArr + i)
     */
 
     int *iArrptr = intArr;
@@ -389,7 +389,7 @@ int main()
     pcInt = &iVar;                      // points to int
     ivar = 6;                           // ivar value stll can be changed (it's stll int not const int)
     // 'const int' must be pointed to by (pointers to const int),
-    //  while 'int' can be pointed to by either a (ptr to int) or a (ptr to const int) [here it does not mean that the var int cannot be changed.]
+    //  while 'int' can be pointed to by either a (ptr to int) or a (ptr to const int [here it does not mean that the var int cannot be changed].)
     
     /// const pointer to int:
     int * const cpInt = &iVar;          // (const pointer) to int (you cannot change the value of the pointer.)

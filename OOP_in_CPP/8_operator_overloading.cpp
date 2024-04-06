@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstring>
-#include <stdlib.h>     // for exit() or #include <process.h>
+#include <stdlib.h>     // for exit(). You can also use <process.h>
 using namespace std;
 
 /* Here is where the exciting lands ☻ */
@@ -26,13 +26,14 @@ public:
     {
         return Counter(++count);    // nameless object
         // Or:
-        // return *this;            // this: is a pointer to the self object (in hand).
+        // ++count;
+        // return *this;            // 'this': is a pointer to the self object (in hand).
     }
     Counter operator ++(int)        // This int isn’t really an argument, and it doesn’t mean integer. 
     {                               // → It’s simply a signal to the compiler to create the postfix version of the operator.   
         return Counter(count++); 
         // Or:
-        // Counter temp = *this;
+        // Counter temp = *this; 
         // count++;
         // return temp;
     }
@@ -188,7 +189,7 @@ bool String::operator ==(String s2) const
 char& String::operator [](int i)    // An obj[i] can be used as L-value or R-value, so return by reference.
 {
     if(i < 0 || i >= SIZE)
-    {   cout << "\nIndex out of bounds"; exit(1); }     // safe array: dosn't allow reading or inserting out of array size.
+    {   cout << "\nIndex out of bounds"; exit(1); }     // safe array: doesn't allow reading or inserting out of array size.
     return str[i];
 }
 
@@ -228,7 +229,7 @@ public:
     // Conversion routone: Time12 as destination, from Time24
     Time12(Time24);
     #else
-    // Conversion routone: Time12 as source, from Time24
+    // Conversion routone: Time12 as source, to Time24
     operator Time24() const;
     #endif
 };
@@ -260,7 +261,7 @@ public:
     // Conversion routone: Time24 as destination from Time12
     Time24(Time12);
     #else
-    // Conversion routone: Time24 as source, from Time12
+    // Conversion routone: Time24 as source, to Time12
     operator Time12() const;
     #endif
 }; 
@@ -284,7 +285,7 @@ Time24::Time24(Time12 t12)      // Time24 ← Time12
 
 
 #else
-// Coversion routines in Source:
+// Coversion routines in Sources:
 Time12::operator Time24() const     // Time24 ← Time12
 {
     int hrs24 = hrs % 12 + (pm ? 12 : 0);
@@ -300,10 +301,10 @@ Time24::operator Time12() const     // Time12 ← Time24
 #endif
 
 
-/* When to put Conversion routines in Destinations, Sources, or both in one class?
+/* When to put Conversion routines in Destinations, Sources, or both in a class?
     Mostly you can take your pick, However, sometimes the choice is made for you. 
-    >> If you have purchased a library of classes, you may not have access
-        to their source code. So, you have to put the from and to your class conversion routines in your defined class.
+    >> If you have purchased a library of classes, you may not have access to their source code. 
+        So, you have to put the 'from' and 'to your class' conversion routines in your defined class.
 */
 
 int main()

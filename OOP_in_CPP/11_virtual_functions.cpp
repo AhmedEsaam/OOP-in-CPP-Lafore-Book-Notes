@@ -229,7 +229,7 @@ public:
 class Child_1 : virtual public SuperParent      // shares a copy of SuperParent with all virtual base classes
 {   };  // what if this changed a private data member in SuperParent, will the other child take the change??
 
-class Child_2 : public virtual SuperParent      // shares a copy of SuperParent with all virtual base classes
+class Child_2 : public virtual SuperParent      // same: shares a copy of SuperParent with all virtual base classes
 {   };
  
 class Grand_Child : public Child_1, public Child_2

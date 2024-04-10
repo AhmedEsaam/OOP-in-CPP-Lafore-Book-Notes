@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+
 
 using namespace std;
 
@@ -434,4 +436,307 @@ int main(int argc, char const *argv[])
 #endif
 
 
+
+/// Multiple Exceptions //////////////////////////////////////////////////////////////////
+
+#if 0
+const int MAX_ = 3;
+
+class Stack_3
+{
+private:
+    int st[MAX_];
+    int top;
+public:
+    // exception classes
+    class Full { };
+    class Empty { };
+
+    // constructor
+    Stack_3()
+    { top = -1; }
+    
+    void push(int var)
+    {
+        if(top >= MAX_ -1)      // if stack is full,
+            throw Full();       // throw Full exception 
+        st[++top] = var;
+    }
+
+    int pop()
+    {
+        if(top < 0)             // if stack is empty,
+            throw Empty();      // throw Empty exception
+        return st[top--];
+    }
+};
+
+
+int main(int argc, char const *argv[])
+{
+    Stack_3 stk;
+
+    try
+    {
+        stk.push(11);
+        stk.push(22);
+        stk.push(33);
+        stk.push(44);                           // oops: stack is full → control transfers to the exception handler (catch)
+        cout << "1: " << stk.pop() << endl;
+        cout << "2: " << stk.pop() << endl;
+        cout << "3: " << stk.pop() << endl;
+        cout << "4: " << stk.pop() << endl;     // oops: stack is empty → control transfers to the exception handler (catch)
+    } 
+    catch(Stack_3::Full)
+    {
+        cout << "Exception: Stack is Full" << endl;
+    }
+    catch(Stack_3::Empty)
+    {
+        cout << "Exception: Stack is Empty" << endl;
+    }
+
+    /*
+        Notice here, in the contrary to the C-language method, instead of checking every output of every function call,
+            we only handle every error for just one time for all the function calls. 
+    */
+
+ 
+    cout << "Arrive here after catch (or normal exit)" << endl;
+    
+    
+    return 0;
+}
+
+#endif
+
+/// Another Example to Use Exceptions with the Distance Class ///
+#if 0
+class Distance
+{
+private:
+    int feet;
+    float inches;
+public:
+    class InchesEx { };                 // exception class
+
+    Distance()
+    { feet = 0; inches = 0.0; }
+
+    Distance(int ft, float in)
+    {
+        if(in >= 12.0)                  // if inches too big
+            throw InchesEx();           // throw exception
+        feet = ft;
+        inches = in;
+    }
+
+    void getdist()
+    {
+        cout << "\nEnter feet: " ;  cin >> feet;
+        cout << "Enter inches: " ;  cin >> inches;
+        if(inches >= 12.0)              // if inches too big
+            throw InchesEx();           // throw exception
+    }
+
+    void showdist()
+    { cout << feet << "\' " << inches << '\"'; }
+};
+
+
+
+int main(int argc, char const *argv[])
+{
+    try
+    {
+        Distance dist1(17, 3.5);
+        Distance dist2;
+        dist2.getdist();
+
+        cout << "\ndist1 = "; dist1.showdist();
+        cout << "\ndist2 = "; dist2.showdist();
+        
+    } 
+    catch(Distance::InchesEx)
+    {
+        cout << "\nInitialization Error: "
+                "inches value is too large.";
+    }
+    cout << endl;
+
+
+    return 0;
+}
+
+#endif
+
+/// Exceptions with Arguments ///
+/*
+    So before, we let the user know what exception occured, now we would inform him/her with more details
+    like:   - what the bad value actually was, 
+            - and perhaps which function exactly caused that exception.
+*/
+
+/* So how to do it?
+    Here is the catch ☻ ...
+    You see, when the 'try' block 'throws' an exception, it really is creating an object of this exception calss,
+        - we can add data members to this exception class, hence we can write a message on that ball thrown (the exception class object) 
+            through intializing these data members with values about the situation happened.
+        - The exception handler (the catch block) would then retrieve these data from the exception class object. 
+*/
+
+#if 0
+class Distance
+{
+private:
+    int feet;
+    float inches;
+
+public:
+    class InchesEx                      // exception class
+    {
+    public:
+        string origin;                  // for name of the routine
+        float iValue;                   // for faulty inches value
+
+        InchesEx() {};
+        InchesEx(string ori, float inc)
+        {
+            origin = ori;
+            iValue = inc;
+        }
+    };
+
+    Distance()
+    { feet = 0; inches = 0.0; }
+
+    Distance(int ft, float in)
+    {
+        if(in >= 12.0)                  // if inches too big
+            throw InchesEx("2-arg constructor of class Distance", in);           // throw exception with details
+        feet = ft;
+        inches = in;
+    }
+
+    void getdist()
+    {
+        cout << "\nEnter feet: " ;  cin >> feet;
+        cout << "Enter inches: " ;  cin >> inches;
+        if(inches >= 12.0)              // if inches too big
+            throw InchesEx("getdist() function", inches);           // throw exception with details
+    }
+
+    void showdist()
+    { cout << feet << "\' " << inches << '\"'; }
+};
+
+
+
+int main(int argc, char const *argv[])
+{
+    while(1)                                // giving the user a chance to reenter values
+    {
+        try
+        {
+            Distance dist1(17, 3.5);        // try to change it to (17, 13.5) but without the while loop
+            Distance dist2;
+            dist2.getdist();
+
+            cout << "\ndist1 = "; dist1.showdist();
+            cout << "\ndist2 = "; dist2.showdist();
+            break;
+        } 
+        catch(Distance::InchesEx ix)        // catching the exception class object
+        {
+            cout    << "\nInitialization Error in the '" << ix.origin
+                    << "': inches value of '" << ix.iValue
+                    << "' is too large.";
+        }
+        cout << endl;
+    }
+
+
+    return 0;
+}
+
+#endif
+
+/// The 'bad_alloc' Class ///
+// The most commonly used standard C++ built-in exception class
+// Which is thrown if an error occurs when attempting to allocate memory with new.
+
+#if 0
+int main(int argc, char const *argv[])
+{
+    const unsigned long SIZE = 10000;       // memory size
+    char* ptr;                              // pointer to memory
+
+    try
+    {
+        ptr = new char[SIZE];               // allocate SIZE bytes
+        /*
+            Put all the statements that use new in a try block.
+        */
+    }
+    catch(bad_alloc)                        // exception handler
+    {
+        /*
+            The catch block that follows handles the exception, 
+            often by displaying an error message and terminating the program.
+        */
+        cout << "\nbad_alloc exception: can't allocate memory.\n";
+        return(1);
+    }
+    delete[] ptr;                           // deallocate memory
+    cout << "\nmemory use is successful.\n";
+
+
+    return 0;
+}
+
+#endif
+
+/*
+    So, one of the biggest benefits of the exceptions is:
+        - The statement that causes an exception need not be located directly in the try block; 
+            (it can also be in a function that is called by a statement in the try block,
+            Or in a function called by a function that is called by a statement in the try block, and so on.) 
+        
+        - So you only need to install a try block on the program’s upper level. 
+            Lower-level functions need not be so encumbered, provided they are called directly or indirectly by functions in the try block.
+
+        * (However, it is sometimes useful for the intermediate-level functions to add their own identifying data to the
+            exception and rethrow it to the next level.)
+*/
+
+/* Notes on exceptions:
+    - As the exception objects has the cabability to be transmitted up through nested functions until a catch block is encountered,
+        it allows the class libraries to send their error mesages to the end programmer which mostly would be different to the one wrote the library.
+
+    - Exceptions are not for every situation:
+        they impose a certain overhead in terms of program size and time (when an exception occures).
+        so, they should probably not be used for user input errors that are easily detectable by the program.
+        instead, use normal decisions and loops to check the user input.
+
+    -  The exception mechanism guarantees that the code in the 'try' block will have been “reset,” at least as far as the existence of objects is concerned.
+        When an exception is thrown, destructor is called automatically for any object that was created up to that point in the 'try' block.
+        This is necessary because the application won't know the logic been existing in the 'try' block,
+        and if it wants to recover from that error, it will (at the very least) ned to start over at the top of the try block.  
+
+    - After you catch an exception, 
+        • you will sometimes want to terminate your application; 
+            ○ The exception mechanism gives you a chance to indicate the source of the error to the user, 
+            ○ and to perform any necessary clean-up chores before terminating. 
+            ○ It also makes clean-up easier by executing the destructors for objects created in the try block. 
+                This allows you to release system resources, such as memory, that such objects may be using.
+        
+        • In other cases you will not want to terminate your program. 
+            ○ Perhaps your program can figure out what caused the error and correct it, 
+            ○ or the user can be asked to input different data. 
+            When this is the case, the try and catch blocks are typically embedded in a loop, 
+                so control can be returned to the beginning of the try block 
+                (which the exception mechanism has attempted to restore to its initial state).
+
+    - If there is no exception handler that matches the exception thrown, the program is unceremoniously terminated by the operating system.
+*/
 

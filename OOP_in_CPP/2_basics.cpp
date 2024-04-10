@@ -244,7 +244,7 @@ int main(void)
         _______________________________
         ↓ Arithmetic Operators      L→R
 
-            *   /   %
+            *   /   % (integer only)
             +   -
             <<  >>
         _______________________________

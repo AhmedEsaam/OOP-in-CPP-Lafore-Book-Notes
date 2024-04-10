@@ -116,7 +116,7 @@ public:
     {   cout << "Enter name: "; cin >> name; }
     void putName()
     {   cout << name; }
-    virtual void getData() = 0;             // pure virtual function
+    virtual void getData() = 0;             // pure virtual function (1. make the class abstract. 2. this function cannot have body)
     virtual bool isOutstanding() = 0;       // pure virtual function
 };
 
@@ -256,6 +256,7 @@ public:
 
 
 /// Friend functions //////////////////////////////////////////////////////////////////////:
+// Because there is exceptions to every rule, and because C++ always give you tools to shoot yourself in the foot.
 /*
     Although the concepts of encapsulation and data hiding dictate that 
     nonmember functions should not be able to access an object’s private or protected data.
@@ -1198,3 +1199,14 @@ int main()
 void func(Zeta) {}
 
 Zeta func(void) { return Zeta(0); }
+
+/////////////////////////////////////////////////////////////////////////
+
+/*
+    Subtype polymorphism is also known as runtime polymorphism.
+    Parametric polymorphism is also known as compile-time polymorphism.
+    Ad-hoc polymorphism is also known as overloading.
+    Coercion is also known as (implicit or explicit) casting.
+*/
+
+// why there is no virtual constructor?

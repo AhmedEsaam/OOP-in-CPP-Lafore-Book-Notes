@@ -182,7 +182,7 @@ void putachar() // putachar() accesses ch
     (They’re also defined outside of any class).
 
     • A global variable is visible to all the functions in a file (and potentially in other files).
-    More precisely, it is visible to all those functions that follow the variable’s definition in the listing. 
+    More precisely: it is visible to all those functions that follow the variable’s definition in the listing. 
     Usually you want global variables to be visible to all functions, so you put their
     declarations at the beginning of the listing.
 */
@@ -208,8 +208,8 @@ void putachar() // putachar() accesses ch
 //  If a global variable is initialized, as in ...
 int exvar = 199;
 /*  this initialization takes place when the program is first loaded.
-    If a global variable is not initialized explicitly by the program—for example,
-    if it is defined as: */
+    If a global variable is not initialized explicitly by the program
+    —for example, if it is defined as: */
 int exvar2;
 /*  then it is initialized automatically to 0 when it is created.
     (This is unlike local variables, which are not initialized and probably contain random
@@ -234,7 +234,7 @@ are stored on the heap */
     =============================================================================
                     Local               Static Local        Global
                     ------------------------------------------------
-    • Visibility:   function            function            file
+    • Visibility:   function            function            file (and other files)
     • Lifetime:     function            program             program
     • Initialized:  not initialized     0                   0
     • Storage:      stack               heap                heap
@@ -251,7 +251,7 @@ are stored on the heap */
     Besides passing values by reference, you can also return a value by reference as in "Virtual Functions".
     *   One reason is to avoid copying a large object.
     *   Another reason is to allow you to use a function call on the left side of the equal sign.
-        (which is a indispensable technique when it comes to "Operator Overloading").
+        (which is an indispensable technique when it comes to "Operator Overloading").
 */
 
 int x;

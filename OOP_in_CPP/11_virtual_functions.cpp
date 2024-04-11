@@ -256,7 +256,7 @@ public:
 
 
 /// Friend functions //////////////////////////////////////////////////////////////////////:
-// Because there is exceptions to every rule, and because C++ always give you tools to shoot yourself in the foot.
+// Because there is exceptions to every rule, and because C++ always give you tools to shoot yourself in the foot!
 /*
     Although the concepts of encapsulation and data hiding dictate that 
     nonmember functions should not be able to access an object’s private or protected data.
@@ -272,7 +272,7 @@ public:
 */
 
 /// 1• Friend functions as a bridge: ........................................................
-class Beta;     // for forward referencing
+class Beta;     // for forward referencing / forward declaration
 
 class Alpha
 {
@@ -302,6 +302,7 @@ int friFunc(Alpha a, Beta b)                // function definition which is a fr
 }
 
 
+/// 2• Friend func. to increase versatility of overloaded operators: ............................
 // Example: Distance class
 #define OVERLOADED_PLUS_OPERATOR_IS_FRIEND  1
 
@@ -340,7 +341,6 @@ public:
 
 
 
-/// 2• Friend func. to increase versatility of overloaded operators: ........................
 #if ! OVERLOADED_PLUS_OPERATOR_IS_FRIEND
 Distance Distance::operator +(Distance d2) const        
 {
@@ -388,7 +388,7 @@ float square(Distance d)
 
 /* Note:
     While 'friend function' feature adds flexibility to the language, 
-    ► It is not in keeping with' data hiding'. 
+    ► It is not in keeping with 'data hiding'. 
         The philosophy that only member functions can access a class's private data.
 
     ► Numerous friends muddy the clear boundaries between classes.
@@ -400,7 +400,7 @@ float square(Distance d)
             - In this respect, the integrity of the class is still protected.
 
     It remains that friend functions should be used sparingly. 
-        - If you find yourself using many friends, you may need to rethink the design of the program.
+        - If you find yourself using many friends, you may need to rethink the design of your program.
 */
 
 
@@ -410,7 +410,7 @@ float square(Distance d)
     The member functions of a class can all be made friends to your class at the same time 
     → when you make the entire class a friend.
 */
-class Delta;        // for forward referencing, to write: friend Delta 
+class Delta;        // for forward referencing: for the two classes to be able to refer to each other 
 
 class Gamma     
 {
@@ -420,13 +420,13 @@ public:
     Gamma() : data(99) { }
     friend Delta;
     // Or:
-    friend class Delta;     // if you did not write 'class Delta;' declaration before class 'Gamma' for forward referencing.
+    friend class Delta;     // handy if you did not write 'class Delta;' declaration before class 'Gamma' for forward referencing.
 };
 
 class Delta
 {
 public:
-    void func1(Gamma g) { cout << "\nGamma data = " << g.data; }
+    void func1(Gamma g) { cout << "\nGamma data = " << g.data; }    // used 'g.data' although 'data' is a private member inside Gamma
     void func2(Gamma g) { cout << "\nGamma data = " << g.data; }
 };
 
@@ -473,6 +473,10 @@ public:
 int Epsilon::total = 0;     // definition of the static data member
 
 
+/* Note ► The 'this' pointer is not available in 'static' member functions, 
+        since they are not associated with a particular object. 
+*/
+
 
 /// Assignment operator and Copy constructor  ///////////////////////////////////////////:
  
@@ -493,12 +497,12 @@ int Epsilon::total = 0;     // definition of the static data member
     ------------------------------------
     ■ Assignment:
         ► invoke the Assignment operator '=':
-            - obj2 = obj1;                  // invoke the assignment operator '='
+            - obj2 = obj1;                  // invokes the assignment operator '='
             - obj = {data, ...};            // implicitly call the multi-arg constructor, then invoke the assignment operator '='
             - obj = data                    // same as above -if the data members are one, or there is a one-arg constructor used for type conversion
     ------------------------------------
     ■ Initialization:
-        ► invoke the no or one-or-more arg. constructors:
+        ► invoke the 'no' or 'one-or-more' arg. constructors:
             - Type obj;                     // invoke no-arg constructor
             - Type obj(data, ...)           // invoke one-or-more arg constructor
     
@@ -519,8 +523,8 @@ int Epsilon::total = 0;     // definition of the static data member
 // Implementation:
 
 #define CHAIN_EQUAL_OP  2       // 0: no chain, 
-                                // 1: takes arg. by 'value'     and return by 'value'
-                                // 2: takes arg. by 'reference' and return by 'reference' 
+                                // 1: takes arg. by 'value'     and returns by 'value'
+                                // 2: takes arg. by 'reference' and returns by 'reference' 
 
 class Zeta
 {
@@ -533,6 +537,7 @@ public:
     Zeta(int d) : data(d) { total++; id = total; }
     void display() { cout << "#" << id << ": " << data << ", total = " << total; }
     ~Zeta() { total--; }
+
 
 /// ■ Overloading the Assignment Operator =
 #if ! CHAIN_EQUAL_OP 
@@ -555,19 +560,19 @@ public:
         // → you may wind up with more objects than you expected.  
     }
 
-    /* ► Why not make the function declarator as:   Zeta operator = (Zeta& z)       ?
-        As this function returns an r-value: Zeta(data), 
-        → it's not possible to bind non-const l-value (Zeta&) to an r-value f type 'Zeta'.
+    /* ► Why not make the function declarator as:       Zeta operator = (Zeta& z)       ?
+        As this function returns an r-value: Zeta(data), which in the chain eventually becomes the new argument
+        → it's not possible to bind non-const l-value (Zeta&) to an r-value of type 'Zeta'.
         In other words, you cannot reference an r-value. Only l-values can be referenced. 
     */
 
-    /* ► Why not make the function declarator as:   Zeta& operator = (Zeta z)       ?
-        In the same sense, the function returns an r-vlaue,
+    /* ► Why not then make the function declarator as:  Zeta& operator = (Zeta z)       ?
+        In the same sense, the function takes an r-vlaue,
         which the return type l-value (Zeta&) cannot be binded to.
     */   
 
 #else
-    /* ► Can we make the function declarator as:    Zeta& operator = (Zeta& z)      ? 
+    /* ► Can we make the function declarator as:        Zeta& operator = (Zeta& z)      ? 
         getting the best of both worlds:
         • passing by reference, hence conserving memory,
         • and returning by reference, hence not generating new objects which consumes memory and causes confusion like messing with static values like 'total'.
@@ -640,7 +645,7 @@ int Zeta::total = 0;
 /* When to overload the assignmnet operator and Copy constructor?
 
     • When you overload the assignment operator, you almost always want to overload the copy constructor as well (and vice versa).
-        ► You don't wnat your custom scheme used in some situations and the default other scheme used in others.
+        ► You don't want your custom scheme used in some situations and the default other scheme used in others.
         ► Even if you don’t think you’ll use one or the other, you may find the compiler using them in nonobvious situations,
             (such as passing an argument to a function by value, and returning from a function by value.)
 
@@ -651,9 +656,9 @@ int Zeta::total = 0;
 
 /* How to Prohibit Copying?
     • You may want to prohibit the copying of an object using these operations.
-        - For example, it might be essential that each object of a class to be created using only no or one-or-more argument constructors 
-            with a unique value for some member as an argument or based on a static value to the class, 
-        → If an object is copied -using the '=' op. or the copy contructor-, the copy will be given the same value. 
+        - For example, it might be essential for each object of a class to be created using only 'no' or 'one-or-more' argument constructors 
+            with a unique value for some members such as arguments or static values of the class, 
+        → If an object is copied -using the '=' op. or the copy contructor-, the copy will be given the same values. 
 
     ◘ To prohibit invoking those two schemes in non-member functions like main():
         ► Just overload the assignment operator and the copy constructor as private members.
@@ -663,10 +668,10 @@ class Eta
 {
 private:
     Eta& operator = (Eta&);         // private assignment operator
-    Eta(Eta&);    
+    Eta(Eta&);                      // private copy constructor
 
 public:
-    Eta(){}                  // private copy constructor
+    Eta(){}                  
 };
 
 
@@ -764,7 +769,7 @@ public:
     void reveal()                       // see where this object is
     {   cout << "\nMy object's address is " << this; }
     // The member functions of every object have access to 'this' pointer, which points to the object itself.
-    // When you call a member function, it comes into existence with the value of this set to the address of the object for which it was called.
+    // When you call a member function, it comes into existence with the value of 'this' set to the address of the object for which it was called.
     void tester()
     {
         this->alpha = 11;
@@ -772,7 +777,7 @@ public:
     }
 
     // static Theta func() { return *this; }    // Error: 'this' may only be used in a non-static member function.
-    /* ► We should note that the this pointer is not available in 'static' member functions, 
+    /* ► We should note that the 'this' pointer is not available in 'static' member functions, 
         since they are not associated with a particular object. */
 };
 

@@ -234,7 +234,7 @@ are stored on the heap */
     =============================================================================
                     Local               Static Local        Global
                     ------------------------------------------------
-    • Visibility:   function            function            file (and other files)
+    • Visibility:   function            function            file (potintially in other files as well)
     • Lifetime:     function            program             program
     • Initialized:  not initialized     0                   0
     • Storage:      stack               heap                heap

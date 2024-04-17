@@ -101,7 +101,9 @@ public:
         → Ordinarily such decisions are made at compile time. 
     • Make possible greater flexibility in performing the same kind of action on different kinds of objects. 
         → In particular, they allow the use of functions called from an array of type pointer-to-base that actually
-            holds pointers (or references) to a variety of derived types. 
+            holds pointers (or references) to a variety of derived types.
+        → They also allow for making generic functions that takes a number of pointers to the base class
+            then you can pass child classes addresses in any order.
             
     ► This is an example of polymorphism. 
 */
@@ -401,6 +403,10 @@ float square(Distance d)
 
     It remains that friend functions should be used sparingly. 
         - If you find yourself using many friends, you may need to rethink the design of your program.
+
+    ♦ CAUTION: if your class destructor deletes dynamic allocated memory, you should pass the class object to the friend function
+                by reference; as passing it by value will make a new object which refers to the same allocated memory which 
+                in turn will be deleted by the destructor as soon as the friend function terminates.
 */
 
 
@@ -517,6 +523,8 @@ int Epsilon::total = 0;     // definition of the static data member
             - Type func();                  // returning by value
         // the compiler uses the copy constructor to make a copy -temporary- object that is destroyed when the scope terminates. 
             
+
+    * Without overloading these functions, the compiler just do a bit-wise copying which is not invoking any constructors
 */
 
 
@@ -539,7 +547,9 @@ public:
     ~Zeta() { total--; }
 
 
+
 /// ■ Overloading the Assignment Operator =
+
 #if ! CHAIN_EQUAL_OP 
     void operator = (Zeta& z)       // • passing by reference conserves memory
     {
@@ -649,8 +659,11 @@ int Zeta::total = 0;
         ► Even if you don’t think you’ll use one or the other, you may find the compiler using them in nonobvious situations,
             (such as passing an argument to a function by value, and returning from a function by value.)
 
-    • if the constructor to a class involves the use of system resources such as memory or disk files, 
-        ► you should almost always overload both the assignment operator and the copy constructor, and make sure they do what you want. 
+    • if the constructor to a class involves the use of system resources such as memory (creating dynamically allocated memory) or disk files,
+        and: - you pass the object as a parameter by value to a function (so you fear a bit-wise copying and destructing shared memory)
+             - you construct new object from an old one (and you'd fear the same things)
+             - your class object is returned by value from a function 
+        ► In this case, you should almost always overload both the assignment operator and the copy constructor, and make sure they do what you want.
 */
 
 
@@ -889,23 +902,19 @@ int main()
         The compiler executes different functions, depending on the contents of the pointer.
         ► It selects the function based on the contents of the pointer at run-time, not on the type of the pointer.
             (This is called 'late binding' or 'dynamic binding'.)
-            (Choosing functions in the normal way, during compilation, 
-                is called 'early binding' or 'static binding'.)
+            (Choosing functions in the normal way, during compilation, is called 'early binding' or 'static binding'.)
         ►  Late binding requires some overhead but provides increased power and flexibility.
 
-        • We don't need to create an object of the 'Base3' class, but it is allowed.
-        
         • *Although, that Base pointer cannot refer to any data field in the derived class.
-            - As the compiler depends on the type of the pointer 
-            to determine the size it can move when incrementing the pointer for example.
-            But, the class functions are only stored once.
+            - As the compiler depends on the type of the pointer to determine the size it can move when incrementing the pointer for example.
+                But, the class functions are only stored once.        
     */
 
     //  3. using pure virtual functions (true abstract classes):
     Deriv_1 driv1;
     Deriv_2 driv2;
     // Base3 base3Obj;          // Error - instantiating an object of an abstract class
-    Base3* ptrBase3[2];         // just another style - pointers array insttead of one pointer.
+    Base3* ptrBase3[2];         // just another style - pointers array instead of one pointer.
     ptrBase3[0]->func();        // normal function in the abstract class
 
     ptrBase3[0] = &driv1;
@@ -1213,5 +1222,5 @@ Zeta func(void) { return Zeta(0); }
     Ad-hoc polymorphism is also known as overloading.
     Coercion is also known as (implicit or explicit) casting.
 */
-
+// Using Virtual tables
 // why there is no virtual constructor?

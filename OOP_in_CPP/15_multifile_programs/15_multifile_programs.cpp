@@ -31,6 +31,12 @@ using namespace std;
 
 /// Inter-Files Communications /////////////////////////////////////////////////////////////
 /*
+    Just a reminder:
+        - Elements declared within a function have local scope; that is, they are visible only within the function body. 
+        - Similarly, class members are only visible within the class (unless the scope resolution operator is used).
+        - Program elements declared outside any function or class have global scope
+            (they can be used throughout an entire file, following the point where they are defined.)
+    
     • Inter-File Variables
         
     • Inter-File Functions

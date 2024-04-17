@@ -24,7 +24,7 @@ int main(void)
     __int32 yy = 7;
     __int64 zz = 9;
     int d = 5, e = 6, f = 7;
-    wchar_t c[] = L"å"; // wchar_t (wide character) size: 4 bytes (32-bit)
+    wchar_t c[] = L"å"; // wchar_t (wide character) size: based on the system [4 bytes (32-bit)]
     wcout << c << endl;
     cout << "jk\ba" << endl; // \b : backspace
     cout << "\xDC" << endl;  // \xFF : to put ASCII characters above 127

@@ -3,7 +3,7 @@
 
 using namespace std;
 
-
+#if 0
 class Base
 {
     public:
@@ -49,7 +49,13 @@ int main()
     objDev.Display(0-1); 
     return 0;
 }
+#endif
 
+
+int main(void) 
+{ 
+    
+}
 /*
 File handling in C++ refers to the process of working with files, which involves reading data from files or writing data to files. C++ provides several classes and functions to perform file operations. Here's an overview of file handling in C++:
 

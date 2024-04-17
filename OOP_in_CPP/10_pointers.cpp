@@ -53,6 +53,9 @@ public:
         // It's reasonable to deallocate the memory when the object is no longer needed.
         // Since this class allocates memory at run time which is not deallocated automatically by itself
         //  when scope terminates, unless it is deallocated deliperately.
+        
+        // ♦ Make sure to pass this class objects by reference as implicitly using the copy constructor in passing by value
+        //      would deletes the allocated memory when scope terminates.     
     }
     void display()
         { cout << str << endl; }

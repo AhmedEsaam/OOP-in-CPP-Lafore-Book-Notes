@@ -3,7 +3,7 @@
 #include <stdlib.h>     // for exit(). You can also use <process.h>
 using namespace std;
 
-/* Here is where the exciting lands ☻ */
+/* Here is where it gets exciting ☻ */
 
 // It can transform complex, obscure program listings into intuitively obvious ones. 
 // By giving operators additional meanings when applied to user-defined data types.
@@ -22,6 +22,7 @@ public:
     { }
     unsigned int get_count()
     {   return count; }
+    // prefix
     Counter operator ++()           // this member func. always has access to the object data, so it doesn't need an argument.
     {
         return Counter(++count);    // nameless object
@@ -29,7 +30,8 @@ public:
         // ++count;
         // return *this;            // 'this': is a pointer to the self object (in hand).
     }
-    Counter operator ++(int)        // This int isn’t really an argument, and it doesn’t mean integer. 
+    // postfix
+    Counter operator ++(int)        // This 'int' is not really an argument, and it doesn’t mean integer. 
     {                               // → It’s simply a signal to the compiler to create the postfix version of the operator.   
         return Counter(count++); 
         // Or:
@@ -67,9 +69,11 @@ public:
     void operator +=(Distance);
     bool operator <(Distance) const;
 
+
     /* Data Conversions ____________________*/
+
     // Convert from meters to Distance. 
-    explicit Distance(float meters)      // Distance d = meters;   // Also called conversion constructor
+    explicit Distance(float meters)      // ex.: Distance d = meters;   // Also called conversion constructor
     {
         float fltFeets = meters * METER_TO_FEET;
         feet = static_cast<int>(fltFeets);
@@ -85,24 +89,24 @@ public:
 };
 
 /* The problem of constructors -that can be called with a single argument- and implicit conversions:
-    - Compiler uses that constructor to perform implcit conversions whenever it's necessary Like 
-        (Distance == 5) here the compiler convert 5 into a Distance type to make the comparison.
-        >> Or when it's in an argumnet like fun(Distance) if the user inputs 
-        an integer number instead of a Distance in the argument, the compiler uses the constructor to convert it to a Distance. 
+    - Compiler uses that constructor to perform implcit conversions whenever it sees it's necessary 
+        Like (Distance == 5) here the compiler convert 5 into a Distance type to make the comparison.
+        >> Or when it's in an argumnet like fun(Distance) if the user inputs an integer number instead of a Distance in the argument, 
+        the compiler uses the constructor to convert it to a Distance. 
     
     - 'explicit' keyword prevents the compiler from making an implicit conversions using this constructor 
-        (that the constructor must be used explicitly not implicitly).
+        (it forces the compiler to use this constructor explicitly not implicitly).
 
     - As a side effect of the explicit constructor, note that you can’t use the form of object initialization
-        that uses an equal sign.
+        that uses an equal sign (=).
 */
 
 
-        
+
 Distance Distance::operator +(Distance d2) const        
 {
     // the operand in the leftside in (op1 + op2) is the one that the operator is a member of.
-    // → so it already have access to its members.
+    // → so it already has access to its members.
     int f = feet + d2.feet;
     float i = inches + d2.inches;
     if(i >= 12.0)
@@ -197,7 +201,7 @@ char& String::operator [](int i)    // An obj[i] can be used as L-value or R-val
 // Conversions between objects of user-defined types
 class Time12;       // forward declaration
 class Time24;
-#define dest    1   // conversion routines in destination classes 
+#define dest    1   // conversion routines are defined in the classes of the destination types 
 
 class Time12
 {
@@ -226,11 +230,11 @@ public:
     }
     
     #if dest
-    // Conversion routone: Time12 as destination, from Time24
-    Time12(Time24);
+    // Conversion routone: Time12 as destination/target from Time24
+    Time12(Time24);             // conversion constructor
     #else
     // Conversion routone: Time12 as source, to Time24
-    operator Time24() const;
+    operator Time24() const;    // operator overloading
     #endif
 };
 
@@ -258,21 +262,22 @@ public:
     }
     
     #if dest
-    // Conversion routone: Time24 as destination from Time12
-    Time24(Time12);
+    // Conversion routone: Time24 as destination/target from Time12
+    Time24(Time12);             // conversion constructor
     #else
     // Conversion routone: Time24 as source, to Time12
-    operator Time12() const;
+    operator Time12() const;    // operator overloading
     #endif
 }; 
 
 #if dest
-// Coversion routines in Destinations:
+// Coversion routines in Destinations/Targets:
 Time12::Time12(Time24 t24)      // Time12 ← Time24
 {
     int hrs24 = t24.get_hrs();
 
-    hrs =  hrs24 % 12 + ((hrs24 % 12) ? 0 : 12);
+    // hrs =  hrs24 % 12 + ((hrs24 % 12) ? 0 : 12);
+    hrs = (hrs24 % 12 < 12) ? hrs24 : hrs24 % 12;
     mins = t24.get_mins();
     pm = hrs24 >= 12;
 }
@@ -301,7 +306,7 @@ Time24::operator Time12() const     // Time12 ← Time24
 #endif
 
 
-/* When to put Conversion routines in Destinations, Sources, or both in a class?
+/* When to put Conversion routines in Destinations, Sources, or both in one class?
     Mostly you can take your pick, However, sometimes the choice is made for you. 
     >> If you have purchased a library of classes, you may not have access to their source code. 
         So, you have to put the 'from' and 'to your class' conversion routines in your defined class.
@@ -376,7 +381,7 @@ int main()
     cout << endl;
 
     // ch = s1[100];    // accessing index out of SIZE. 
-                        // (will throw an error messgae then exit without actually accessing)
+                        // (will throw an error message then exit without actually accessing)
     // s1[100] = 'a';
 
 
@@ -384,7 +389,7 @@ int main()
     /* Data Conversion ............................. */
 
     /*  The compiler doesn’t need any special instructions to use = operator:
-        → Normally, when the value of one object is assigned to another of the same type,
+        → Normally when the value of one object is assigned to another of the same type,
           the values of all the member data items are simply copied into the new object.
 
         When a compiler converts between types implicitly or explicitly, it has internal routines to do so.
@@ -398,7 +403,7 @@ int main()
     // From English Distance to meters
     float meters = static_cast<float>(d5);
     cout << "Float meters = " << meters << endl;
-    meters = d5;    // compiler automatically invoke the provided conversion routine
+    meters = d5;    // compiler automatically invokes the provided conversion routine
     cout << "Float meters = " << meters << endl;    
 
     // From C-string to a String object
@@ -408,9 +413,9 @@ int main()
     cout << endl;
     String ss2 = "who's there!";
     cout << ss << static_cast<char*>(ss2) << endl;
-        // ↑ emplicit conversion: the compiler looks for a way to convert ss2 to a type that << does know about, 
+        // ↑ implicit conversion: the compiler looks for a way to convert ss2 to a type that << does know about, 
         // ... and it finds the operator cast (char*) we provided.
-    cs = ss2;       // emplicit conversion: compiler automatically invoke the provided conversion routine
+    cs = ss2;       // implicit conversion: compiler automatically invokes the provided conversion routine
     cout << ss << cs << endl;
     
     
@@ -449,24 +454,26 @@ int main()
     
        - Some conversions take place between user-defined types and basic types. 
             Two approaches are used in such conversions:
-            • A one-argument constructor changes a basic type to a user-defined type. 
-            • Conversion operator converts a user-defined type to a basic type. 
-            • When one user-defined type is converted to another, either approach can be used.
+            • A one-argument constructor (conversion constructor) changes a basic type to a user-defined type. 
+            • Overloaded conversion operator converts a user-defined type to a basic type. 
+            • When one user-defined type is converted to another user-defined type, either approaches can be used.
 
         TABLE: Type Conversions:
-            _________________________________________________________________________
-                            Routine in Destination          Routine in Source
-            _________________________________________________________________________
-            Basic to basic          (Built-In Conversion Operators)
-            Basic to class      Constructor                         N/A
-            Class to basic          N/A                     Conversion operator
-            Class to class      Constructor                 Conversion operator
-            _________________________________________________________________________
+            ___________________________________________________________________________________________________________
+                                                  Routine in Destination                     Routine in Source
+            ___________________________________________________________________________________________________________
+            Basic           to basic              ................. (Built-in Conversion Operators) ...............
+            Basic           to user-defined             Constructor                                 N/A
+            user-defined    to basic                        N/A                             Conversion operator
+            user-defined    to user-defined             Constructor                         Conversion operator
+            ___________________________________________________________________________________________________________
 
-       - Guidelines to use them in a convenient way:
+
+
+       - Guidelines to use operator overloading in a convenient way:
         • Use Similar Meanings for Similar Syntax:
-            >> Use overloaded operators to perform operations that are as similar as possible 
-            to those performed on basic data types. (ex: a = b + c; + operator must be used to perform operation like or close to addition.)
+            >> Use overloaded operators to perform operations that are as similar as possible
+            to those performed on basic data types. (ex: a = b + c; + operator must be used to perform operation like or close to addition in meaning)
 
             >> Use overloaded operators in the same way you use basic types.
             If you overload one arithmetic operator, you may for consistency want to overload all of them. This will prevent confusion.
@@ -477,10 +484,10 @@ int main()
             >> Use the operator overloading sparingly as anyone unfamiliar with your listing will need to do considerable research
             to find out what a statement means.
 
-        - In data converion if you wrote the conversion routine from one data type to another twice,
+        - In data converion if you write the conversion routine from one data type to another twice;
             one in the Destination (as a one-arg. constructor) and one in the Source (as a conversion operator.),
             >> The compiler will signal an error (as the compiler does not like to be placed in a situation where 
-                it doesn’t know what to do, )
+                it doesn’t know what to do.)
 
         - You can’t overload a binary operator to be a unary operator, or vice versa.
 

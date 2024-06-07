@@ -51,7 +51,7 @@ T abs(T n)
 */
 
 /// Does it work for all Types? ///
-/*
+/* Not all operators and functions you use inside the template function code block may work on all intended types that you want.
     Does the template function find() works when using it to find a C-string in an array of C-strings?
     - well, the (==) operator does not work to compare two C-strings (you must use strcmp() library function), 
         so no, it does not. (However it will work for the 'string' class).
@@ -88,7 +88,7 @@ int find(aType* array, int size, aType value)
 */
 
 /// Syntax Variation ///
-//Some programmers put the template keyword and function declarator in the same line.
+// Some programmers put the template keyword and function declarator in the same line.
 // but it's more forbidding and less clear.
 template <class Typee> int find(Typee* arr, int size, Typee val);
 
@@ -152,7 +152,7 @@ template <class Type>
 class Stack
 {
     private:
-        Type st[MAX];                // stack array of any Type
+        Type st[MAX];               // stack array of any Type
         int top;                    // number of the top of the stack
     public:
         Stack()                     // constructor
@@ -345,19 +345,19 @@ int main(int argc, char const *argv[])
     - You would make the function returns an enum value (like: Null, 0, OK, ERROR_ARGUMENT1_IS_WRONG, etc...) 
         and then make if-else statements on these returned values to check for correctness.
 
-    But this leads to a lngthy code and in C++ cannot check for implicitly-called functions like constructors,
-    and functions from class libraries which the end programmer did not write. 
+    But this leads to a lengthy code and in C++ cannot check for implicitly-called functions like constructors,
+    and functions from class libraries which the end-programmer did not write. 
 */
 
 // So, in C++, how whould that go?
 /*
     We'll play a throw-and-catch game:
         Any time the function finds an error it will 'throw' an exception,
-        then, in the code you surround the call to this function with a 'try' block to 'catch' these exceptions they if happened.
+        then, in the code you surround the call to this function with a 'try' block to 'catch' these exceptions if they happened.
 
-    Meaning, we put an exception calss withing the public part of our class,
+    Meaning, we put an exception calss within the public part of our class,
         - then, in our class member function, we throw an exception, using the keyword 'throw' followed by the exception class constructor function call,
-        - then, in main() weenclose any statements that interact with objects of our class in a 'try' block,
+        - then, in main() we enclose statements that interact with objects of our class in a 'try' block,
         - if any of these statements causes an error, an exception will be thrown and catched in the 'catch' block.
 */
 
@@ -422,7 +422,7 @@ int main(int argc, char const *argv[])
 
         /* What happens then?
             • Program control falls through here, so you can continue processing at that point without an interruption despite the error occured, 
-            • The exception handler may transfer control elsewher,
+            • The exception handler may transfer control elsewhere,
             • Or (often) terminates the program 
         */
     }
@@ -699,7 +699,7 @@ int main(int argc, char const *argv[])
 /*
     So, one of the biggest benefits of the exceptions is:
         - The statement that causes an exception need not be located directly in the try block; 
-            (it can also be in a function that is called by a statement in the try block,
+            (it can also be deep in a function that is called by a statement in the try block,
             Or in a function called by a function that is called by a statement in the try block, and so on.) 
         
         - So you only need to install a try block on the program’s upper level. 
@@ -730,8 +730,8 @@ int main(int argc, char const *argv[])
             ○ It also makes clean-up easier by executing the destructors for objects created in the try block. 
                 This allows you to release system resources, such as memory, that such objects may be using.
         
-        • In other cases you will not want to terminate your program. 
-            ○ Perhaps your program can figure out what caused the error and correct it, 
+        • In other cases you may not want to terminate your program. 
+            ○ Perhaps your program can figure out what has caused the error and correct it, 
             ○ or the user can be asked to input different data. 
             When this is the case, the try and catch blocks are typically embedded in a loop, 
                 so control can be returned to the beginning of the try block 

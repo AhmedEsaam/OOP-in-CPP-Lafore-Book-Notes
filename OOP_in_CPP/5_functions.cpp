@@ -6,7 +6,7 @@ using namespace std;
 
 void intfrac(float num, float &intPart, float &fracPart);
 //  &: the 'ampersand' is used to mean (reference to ...).
-// arguments here are 'aliases': different names to the origional ones.
+// arguments here are 'aliases': different names to the original ones.
 
 #if 0
 int main(void)
@@ -39,7 +39,7 @@ void intfrac(float num, float &intPart, float &fracPart)
 }
 
 /*
-    References don't exist in C, where pointers serve a somewhat similar purpose (pass by address). Although often less conveniently. 
+    References don't exist in C, where pointers serve a somewhat similar purpose (which is passing by address). Although often less conveniently. 
     Reference arguments were introduced into C++ to provide flexibility in a variety of situations involving objects as well as simple variables.
 */
 
@@ -89,9 +89,8 @@ inline float lbs2kg(float pounds)
         In fact, if a function is very short, the instructions necessary to call it may take up as much
         space as the instructions within the function body.
 
-    • Betters function-like macros in that the compiler checks the types of the arguments.
-
-    • You don't need to care about the paranthesis too much as with macros.
+    • Betters function-like macros in that the compiler checks the types of the arguments and 
+        you don't need to care about the paranthesis too much as with macros.
 
  * Cons:
  --------
@@ -127,7 +126,7 @@ void repchar2(char ch, int n)   // defaults supplied
     • Useful if you don’t want to go to the trouble of writing arguments that,
         for example, almost always have the same value
 
-    • useful in cases where, after a program is written, the programmer decides to increase
+    • useful in cases where: after a program is written, the programmer decides to increase
         the capability of a function by adding another argument (to the right).
         >> Meaning that the existing function calls can continue to use the old number of arguments,
             while new function calls can use more.
@@ -155,7 +154,7 @@ void repchar2(char ch, int n)   // defaults supplied
 */
 
 /* Storage Class:
-    • Automatic:    Variables with storage class 'automatic' exist during the lifetime of the function.
+    • Automatic:    Variables with storage class 'automatic' exist during the lifetime of the function. (auto)
     • Static:       Variables with storage class 'static' exist for the lifetime of the program.
 
     Note: The name automatic is used because the variables are automatically created when a function is
@@ -163,9 +162,10 @@ void repchar2(char ch, int n)   // defaults supplied
 */
 
 /*
-In the case of variables declared within a function, storage class and scope coincide: These
-variables exist only while the function in which they are defined is executing, and are only visible
-within that function. For some kinds of variables, however, lifetime and visibility are not the same.
+    In the case of variables declared within a function, storage class and scope coincide: 
+        these variables exist only while the function in which they are defined is executing (automatic for storage class), 
+        and are only visible within that function (local scope). 
+    For some kinds of variables, however, lifetime and visibility are not the same.
 */
 
 /* GLOBAL VARIABLES ..................................................*/
@@ -199,7 +199,7 @@ void putachar() // putachar() accesses ch
 /*
     Warning:
         * Global variables create organizational problems because they can be accessed by any function.
-        * The wrong functions may access them, or functions may access them incorrectly.
+        * The wrong functions may access them, or may access them incorrectly.
         * In an object-oriented programming, there is much less necessity for global variables.
 */
 
@@ -209,7 +209,7 @@ void putachar() // putachar() accesses ch
 int exvar = 199;
 /*  this initialization takes place when the program is first loaded.
     If a global variable is not initialized explicitly by the program
-    —for example, if it is defined as: */
+    —for example, if it is defined as:... */
 int exvar2;
 /*  then it is initialized automatically to 0 when it is created.
     (This is unlike local variables, which are not initialized and probably contain random
@@ -234,23 +234,24 @@ are stored on the heap */
     =============================================================================
                     Local               Static Local        Global
                     ------------------------------------------------
-    • Visibility:   function            function            file (potintially in other files as well)
-    • Lifetime:     function            program             program
+    • Visibility:   function            function            file (potentially in other files as well)
+    • Lifetime:     function (auto)     program             program
     • Initialized:  not initialized     0                   0
     • Storage:      stack               heap                heap
 
     • Purpose:      Variables used      Same as local,      Variables used by
                     by a single         but retains value   several functions
-                    function            when function
+                    function            when function       and potentiaaly several files
                                         terminates.
 */
+
 
 /* RETURNING BY REFERENCE ..................................................... */
 
 /*
     Besides passing values by reference, you can also return a value by reference as in "Virtual Functions".
     *   One reason is to avoid copying a large object.
-    *   Another reason is to allow you to use a function call on the left side of the equal sign.
+    *   Another reason is to allow using a function call on the left side of the equal sign (=).
         (which is an indispensable technique when it comes to "Operator Overloading").
 */
 
@@ -288,11 +289,12 @@ void aFunc(int &a, const int &b) // definition
 {
     a = 107;        // OK
     // b = 111;     // error: can’t modify constant argument
+    cout << b;      // OK
 }
 
 /* Why to use const if we were careful not to modify the variable anyway?
 
-    >> One of the design philosophies in C++ is that it’s better to let the compiler find errors
+    >> One of the design philosophies of C++ is that it’s better to let the compiler find errors
     than to wait for them to surface at runtime. 
     
     - The use of const function arguments is an example of this approach in action.
@@ -301,13 +303,12 @@ void aFunc(int &a, const int &b) // definition
 /* Note:
     As (const int) is a different type from (int), 
         >> you can overload a function by using both in different function definitions. 
-*/
 
-/* Note:
-    If you want to pass a const variable to a function as a 'reference' argument, you don’t have a
-    choice but to declare it with the 'const' qualifier in the function declaration.
+    For the same reason, if you want to pass a const variable to a function as a 'reference' argument, you don’t have a
+    choice but to declare it with the 'const' qualifier in the function declaration 
+    (as the reference is an alias to the 'const int' which is is not 'int').
     
-    (There’s no problem passing a const argument by 'value' without using 'const' in the declaration, 
+    (However, there’s no problem passing a const argument by 'value' without using 'const' in the declaration, 
     because the function cannot modify the original variable anyway, 
     but passing it by 'reference' is just passing an alias of the original variable with the same type.)
 */

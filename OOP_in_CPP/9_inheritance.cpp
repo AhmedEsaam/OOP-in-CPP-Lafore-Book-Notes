@@ -9,8 +9,8 @@ using namespace std;
         person or company, derive other classes from it that are suited to particular situations.
         (with no need to modify —or even access the source code of— the base class.)
 
-        - This leads to new flexibility in the software development process, and to a wider range of roles for software developers:
-        ► Programmer A creates a general-purpose programming tool (i.e. class).
+        - This leads to a new flexibility in the software development process, and to a wider range of roles for software developers:
+        ► Programmer A creates a general-purpose programming tool (i.e. Class).
         ► Programmer B creates a specialized version of this class (He may not have access to the source code for this class). 
             (B likes the class A, but thinks it could be improved, so he creates a new class 
             that is derived from class A but incorporates the extensions necessary.)
@@ -25,14 +25,14 @@ using namespace std;
         if we start fooling around with the source code for the class, the testing process will
         need to be carried out again, so it's better to make a derived class.
     • Code security: 
-        We might not have access to the class source code any way, especially if it was distributed
+        We may not have access to the class source code any way, especially if it was distributed
         as part of a class library.
 */
 
 
 class Counter
 {
-protected:  // members are still hidden but only give access within derived classes member functions
+protected:  // protected members are still hidden but only can be accessed within derived classes member functions
     unsigned int count;
 
 public:
@@ -57,7 +57,7 @@ public:
     //  So, we have to write a new set of constructors for the derived class:
     
     CountDn() : Counter(0)      // this constructor calls the Base class constructor (and also can be omitted)
-    {   }                       // you want to initialize any vars (including private ones) whether they're in the parent or the child.
+    {   }                       // you should initialize any vars (including private ones) whether they're in the parent or the child.
     CountDn(int c) : Counter(c)
     {   }
     CountDn operator --()
@@ -66,12 +66,12 @@ public:
 
 /* The concepts of 'Encapsulation' and 'Data Hiding'
     dictate that non-member functions should not be able to access an object’s private or protected data. 
-    (The policy is, if you’re not a member, you can’t get in!)
+    (The policy is: if you’re not a member, you can’t get in!)
 */
 
-/* ACCESS SPECIFIERS:.....................(for member functions and non-member functions).............................
+/* ACCESS SPECIFIERS:.................... (for member functions and non-member functions) ..........................
     private:    ► Can only be accessed in member functions.
-                    - members can be accessed within the class, but not outside it (this includes derived classes).
+                    - members can be accessed within the class, but not outside it (as with derived classes).
                 
     protected:  ► Can only be accessed in member functions in this class and the derived classes. 
                     - members can be accessed within the class, but not outside it (exept for derived classes).
@@ -93,9 +93,9 @@ ________________________________________________________________________________
 */
 
 /* Class being inheritance-ready:
-    If you are writing a class that you suspect might be used, at any point in the
-        future, as a base class for other classes,
-    >> then any member data that the derived classes might need to access should be made
+    If you are writing a class that you suspect that it might be used at any point in the
+        future as a base class for other classes,
+    >> then, any data member that the derived classes might need to access should be made
         protected rather than private.
 */
 
@@ -275,7 +275,7 @@ class Laborer : public Employee
 
 /* MULTI_LEVEL INHERITANCE ..................................................................... */ 
 // Foreman derived from Laborer (However, he oversees a group of laborers. He's like a laborers leader)
-class Foreman : Laborer     // private by default (but it's better to put it anyway)   
+class Foreman : Laborer     // inheritance is private by default (but it's better to put it anyway)   
 {
 private:
     float quotas;       // percent of quotas met successfully
@@ -478,7 +478,7 @@ private:
 
 
 /* COMPOSITION ..................................................................... */
-class Door      // Belong only to Car objects, we may not need to declare a 'Door' object separately in the main().  
+class Door      // Belongs only to Car objects, so, we may not need to declare a 'Door' object separately in the main().  
 {
 private:
     string color;
@@ -508,9 +508,9 @@ private:
 
         'Navigability in Association':
         • if each of the two classes objects call operations in the other class,
-            → it's called 'bidirectional' association (there would be arrowheads on both ends of the line.)
+            → it's called 'bi-directional' association (there would be arrowheads on both ends of the line.)
         • if it only goes one way,
-            → it's called 'unidirectional' association.
+            → it's called 'uni-directional' association.
 
         like: "Time12 is associated with Time24" in: (t12 = t24;)
         >> As the Time12 object (t12) calls the opertator function of class Time24 object (t24).
@@ -615,8 +615,8 @@ private:
 
 
 
-// Diamond class tree:  
-// → an example prone to ambiguity
+// Diamond class tree (prone to ambiguity):  
+// → An example: 
 class A
 {
 public:
@@ -725,6 +725,7 @@ int main()
     // - if show_raw() is defined in the derived class: (it overrides all same-name functions in Parent classes)
     siding.show_raw();              cout << endl;
     #endif
+
     
     //-------------------------------------------
     /** 2• If you derive a class from two classes that are each derived from the same class. 
@@ -744,7 +745,7 @@ int main()
             unless you have considerable experience. 
     */
 
-    // Coposition:
+    // Composition:
     Car car1;   // 'Door' objects has been declared and have the same lifetime of car1.
 
 

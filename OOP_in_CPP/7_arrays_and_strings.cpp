@@ -137,7 +137,7 @@ void display_deck(Card deck[52])
 
 /************************************* STRINGS ***************************************/
 /*
-    There are two kinds of strings are commonly used in C++:
+    There are two kinds of strings that are commonly used in C++:
     • C-strings (arrays of type char): <cstring> library provides useful functions [strlen(s), strcpy(s_dest, s), strcat(s1, s2)] to handle these.
     • and strings that are objects of the standard C++ string class.
 */
@@ -165,26 +165,26 @@ public:
     }
 };
 
-/* Note:
+/* Cons:
     There is a potential defect in this class that:
-        • All String objects occupies the same fixed amount of memory.
-        • And, there is no bounds checking;
+        • All String objects occupies the same fixed amount of memory.     
             - A string shorter than this fixed length wastes memory,
             - and a longer string —if one were mistakenly generated— could crash the system 
                 by extending beyond the end of the array.
+        • And, there is no bounds checking;
 */
 
-
-
-/* STANDARD C++ STRING CLASS */////////////////////
-/*
-    Although strings created with the string class have superseded C-strings in many situations, 
+/* But,
+    Although C++ strings created with the string class have superseded C-strings in many situations, 
     C-strings are still important for a variety of reasons:
         • First:        they are used in many C library functions. 
         • Second:       they will continue to appear in legacy code for years to come. 
         • And third:    for students of C++, C-strings are more primitive and therefore
                             easier to understand on a fundamental level.
 */
+
+
+/* STANDARD C++ STRING CLASS */////////////////////
 
 /*
     This class improves on the traditional C-strings in many ways:
@@ -216,7 +216,7 @@ int main(int argc, char const *argv[])
                               // int nums2[5] = {1, 2, 3, 4, 5, 6, 7}; // Error
 
 
-    /* FUNCTION DECLARATION WITH ARRAY ARGUMENTS *///////////////
+    /* FUNCTION CALL WITH ARRAY ARGUMENTS *///////////////////////
     double sales[DISTRICTS][MONTHS] = {{165.45, 664.2},
                                        {161.66, 516.6},
                                        {612.54, 622.9}};
@@ -308,7 +308,7 @@ int main(int argc, char const *argv[])
     // C-string library functions:
     /* 
         • There are no string operators built into C++ for C-Strings.
-        - But, C-strings are usually be manipulated using library functions.
+        - But, C-strings are usually manipulated using library functions.
             (Fortunately there are many such functions.)
     */
     int strLength = strlen(str3);   // string length (does not include the null.)
@@ -326,7 +326,7 @@ int main(int argc, char const *argv[])
     int ch_indx = pch - str1;
 
 
-    // String class (the made up one)
+    // String class (our made-up one)
     String st1("Hi, ");
     String st2 = "all!";
     String st3;
@@ -338,8 +338,8 @@ int main(int argc, char const *argv[])
 
     /* STANDARD C++ STRING CLASS *//////////////////////////////////////////////////////////////////////////////////////
     /* Note:
-            •• string objects are not terminated with a null or zero as C-strings are. Or atleast it's not countable when
-            using .size() or .length() functions
+            •• string objects are not persumably terminated with a null or zero as C-strings are. Or atleast it's not countable when
+            using .size() or .length() functions. So, we can't really tell.
     */
     /// Initialization....................
     string ss1("Man");
@@ -351,7 +351,7 @@ int main(int argc, char const *argv[])
     cout << "Enter your full name: " << endl;
     cin.ignore(2);
     getline(cin, full_name);    // getline(cin, str) handles embedded blanks
-    greeting += full_name;
+    greeting += full_name;      // the use of operators
     cout << greeting << endl;
 
     cout << "Enter your address in multible lines (terminated by $): " << endl;
@@ -381,7 +381,7 @@ int main(int argc, char const *argv[])
 
     // Search
     string ss4 = "In Xanadu did Kubla Kahn a stately pleasure dome decree";
-    int n;
+    int n;      // index
     n = ss4.find("Kubla");                      // finds the index at which it first incounters the given string
     cout << "Found Kubla at " << n << endl;
 
@@ -445,12 +445,12 @@ int main(int argc, char const *argv[])
     int cap = ss7.capacity();
     cout << cap << endl;
     
-    // Copying string object to char array
+    // Copying string object to → char array: using string.copy() function
     string ss8 = "Ahmed";
     int siz = ss8.size();
     char charray[20];
     ss8.copy(charray, siz, 0);  // arguments: Ptr to char array, Number of chars to copy, Position of the 1st char to copy
-    charray[siz] = 0;           // terminate with '\0'
+    charray[siz] = 0;           // IMPORTANT: terminate with '\0'
                                 // • We can also use c_str() or data() functions which both use pointers.
 
     /*

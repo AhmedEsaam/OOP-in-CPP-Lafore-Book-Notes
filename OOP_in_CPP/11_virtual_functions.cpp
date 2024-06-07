@@ -8,7 +8,7 @@ using namespace std;
 // 'Virtual' means existing in appearance but not in reality. 
 // they give the ability of polymorphism, which means different forms.
 
-// • Using the same function name with different classes objects that are descendant from a single class:
+// • Using the same function name with different classes' objects that are descendant from a single class:
 //-----------------------------------------------------------
 //  1. using normal functions:
 class Base
@@ -396,7 +396,7 @@ float square(Distance d)
     ► Numerous friends muddy the clear boundaries between classes.
         So, friend functions are conceptually messy, and potentially lead to a spaghetti-code. 
 
-    ■ However, as the friend function must be declared as such within the class whose data it will access,
+    ■ However, as the friend function must be declared as such within the class which data it will access,
         → Thus a programmer who does not have access to the source code for the class 
             cannot make a function into a friend.
             - In this respect, the integrity of the class is still protected.
@@ -501,13 +501,13 @@ int Epsilon::total = 0;     // definition of the static data member
 
 /* ♠ Initialization & Assignment ♠
     ------------------------------------
-    ■ Assignment:
+    ■ Assignment:       (used in the code listings after objects are already defined)
         ► invoke the Assignment operator '=':
             - obj2 = obj1;                  // invokes the assignment operator '='
             - obj = {data, ...};            // implicitly call the multi-arg constructor, then invoke the assignment operator '='
             - obj = data                    // same as above -if the data members are one, or there is a one-arg constructor used for type conversion
     ------------------------------------
-    ■ Initialization:
+    ■ Initialization:   (used when declaring a new object)
         ► invoke the 'no' or 'one-or-more' arg. constructors:
             - Type obj;                     // invoke no-arg constructor
             - Type obj(data, ...)           // invoke one-or-more arg constructor
@@ -522,14 +522,14 @@ int Epsilon::total = 0;     // definition of the static data member
             - void func(Type obj);          // passing by value
             - Type func();                  // returning by value
         // the compiler uses the copy constructor to make a copy -temporary- object that is destroyed when the scope terminates. 
+        //  → Remember: Always pass by reference the objects that has destructors, to avoid damaging the original object.
             
 
-    * Without overloading these functions, the compiler just do a bit-wise copying which is not invoking any constructors
+    * Without overloading these functions, the compiler just do a bit-wise copying which is not invoking any constructors (so, not recommended)
 */
 
 
-// Implementation:
-
+// So, let's implement that:
 #define CHAIN_EQUAL_OP  2       // 0: no chain, 
                                 // 1: takes arg. by 'value'     and returns by 'value'
                                 // 2: takes arg. by 'reference' and returns by 'reference' 
@@ -545,6 +545,7 @@ public:
     Zeta(int d) : data(d) { total++; id = total; }
     void display() { cout << "#" << id << ": " << data << ", total = " << total; }
     ~Zeta() { total--; }
+
 
 
 
@@ -620,11 +621,12 @@ public:
 
 
     /* CAUTION:
-        When you overload the = operator you assume responsibility for doing whatever the default assignment operator did. 
+        When you overload the = operator you assume responsibility for doing whatever the default assignment operator does. 
         Often this involves copying data members from one object to another.
     */
    
    
+
 /// ■ The Copy Contructor:
 
     // The default copy constructor, which is provided automatically by the compiler for every object, performs a member-by-member copy.
@@ -928,7 +930,7 @@ int main()
 
     /* The compiler executes different functions, depending on the contents of the pointer.
         • 'Base3' class is an abstract class with atleast one pure virtual function, hence we CANNOT create an object of it,
-            only a pointer to it. However, we can put functions with definitions in its body where the pointer can refer to them.
+            only a pointer to it. However, we can put functions with definitions in its body where the BaseClass pointer can refer to.
     */
 
     /// Example: Person class: ----------------------------------------------
@@ -1083,7 +1085,7 @@ int main()
         void func(Zeta);
         func(z6);
         // It creates the copy that the function operates on.
-        // Of course, the copy constructor is not invoked if the argument is passed by reference or if a pointer to it is passed.
+        // Remember, the copy constructor is not invoked if the argument is passed by reference or if a pointer to it is passed.
     
     // 3 ♦ When values are returned from functions ♦:
         Zeta func(void);
@@ -1223,4 +1225,4 @@ Zeta func(void) { return Zeta(0); }
     Coercion is also known as (implicit or explicit) casting.
 */
 // Using Virtual tables
-// why there is no virtual constructor?
+// why there is no virtual constructor? Because derived calsses must have their own constructors anyway

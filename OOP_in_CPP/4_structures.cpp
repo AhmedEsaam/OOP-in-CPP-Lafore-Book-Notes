@@ -38,7 +38,7 @@ int main(void)
          << part1.cost << endl
          << endl;
 
-    /* Structures can't be added or compared: (because there can't be operator overloading with structures)
+    /* Structs can't be added or compared to another structs: (because there can't be operator overloading with structures)
         part2 = part1 + part2;   → wrong
         if(part1 == part2)       → wrong
     */
@@ -82,6 +82,6 @@ int main(void)
 
 
 /* Note:
-    Data constructs such as structures and classes end with a semicolon, 
+    Data constructs such as structures and classes end with a semicolon (;), 
     while control constructs such as functions and loops do not.)
 */

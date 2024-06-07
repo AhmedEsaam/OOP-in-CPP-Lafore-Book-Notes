@@ -2,7 +2,7 @@
 using namespace std;
 
 /*
-    Placing data and functions together into a single entity is a central
+    Placing data and functions together in a single entity is a central
         idea in object-oriented programming
 
     Classes are programming language definitions used by compiler to mount the code. 
@@ -37,8 +37,9 @@ public:
         by functions outside the class.
 */
 
-/* Functions:
-    • (The functions are not definitions in the sense that memory is set aside for the function code; 
+/* Functions within Classes:
+    • The functions inside classes are not definitions 
+        (in the sense that memory is not set aside for the function code); 
         this doesn’t happen until an object of the class is created.
 
     • ** Member functions defined inside a class this way are created as inline
@@ -118,7 +119,7 @@ public:
         this->ID = id;
         // this function can be called with const Distance object.
         // Putting 'const' means this function can be used with const objects,
-        //      If 'const' does not exist: we cannot pass a const object as an implicit argumnet (this.)
+        //      If 'const' does not exist: we cannot pass a const object of this class as an implicit argument (this.)
         //      It must be passed as a const object ('const this'). 
     }
 
@@ -157,10 +158,11 @@ Distance Distance::add_dist(const Distance &d2) const
 }
 /*
     Any member function has:
-        >> Direct access    (Using the member names only):
-            → to all the members, whether private or public, of that object.
-        >> Indirect access  (using the object name and the member name):
-            → to other objects of the same class that are passed as arguments.
+        >> Direct access    → to all the members, whether private or public, of that object.
+            (Using the member names only):
+
+        >> Indirect access  → to other objects of the same class that are passed as arguments.
+            (using the object name and the member name):
 */
 
 
@@ -213,6 +215,7 @@ public:
     void func();
 };
 
+
 struct fooo
 {
     void func(); // public by default
@@ -227,7 +230,7 @@ private:
         only one such item is created for the entire class.
 
     • It's useful when all objects of the same class must share
-        a common item of informatio.
+        a common item of information.
         .. While a normal static variable is used to retain information
             between calls to a function,
         .. static class member data is used to share information
@@ -261,8 +264,8 @@ int car::count = 0; // *definition* of count
 // Static Class Data Separate Declaration and Definition:
 /*
     Ordinary variables:
-        • declared (the compiler is told about their name and type) and
-        • defined (the compiler sets aside memory to hold the variable).
+        • declared  (the compiler is told about their name and type) and
+        • defined   (the compiler sets aside memory to hold the variable).
     Static member data:
         • The variable’s declaration appears in the class definition, but
         • the variable is actually defined outside the class.
@@ -355,7 +358,7 @@ int main(void)
     /*
         - These objects can use only any const member functions.
             (because they’re the only ones that are guaranteed not to modify it.)
-        - And they cannot use any non-const function.
+        - So, they cannot use any non-const function.
             (you can’t modify it.)
 
         * Remember, using const helps the compiler to help you.
@@ -398,10 +401,10 @@ int main(void)
         This makes it easy to conceptualize a programming problem. 
         • You figure out what parts of the problem can be most usefully represented as objects, 
         • and then put all the data and functions connected with that object into the class.
-        • One advantage is that in an OO program the compiler can find many more
+        • One advantage is that in an OO program, the compiler can find many more
             conceptual errors than in a procedural program
     
     What to include in a class?:
-        •  you put into this class the data items that represent the value of the object, 
+        • You put into this class the data items that represent the value of the object, 
         • and also the functions to (set) value, retrieve it (get), display it (show), compare it, and so on.
 */

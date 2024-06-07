@@ -34,6 +34,8 @@ int main(void)
     //** When two arithmetic operators have the same precedence, the one on the left is executed first
     int exp = (1 + 6) * 4 / 3;
 
+    // Default number types are: int and double.
+
     /* INTEGERS:
         ** types long and short have fixed sizes no matter what system is used.**
         Keyword     Low                 High                Memory (Bytes)
@@ -96,7 +98,7 @@ int main(void)
             both before and after the decimal point,
         • while in both the 'fixed' and 'scientific' notations:
             the precision field specifies exactly how many digits to display
-            after the decimal point, even if they are trailing decimal zeros.
+            (after) the decimal point, even if they are trailing decimal zeros.
     */
     std::cout << defaultfloat;
     std::cout.precision(2);
@@ -104,7 +106,7 @@ int main(void)
     cout << "fixed with precision (2): " << fixed << db << endl;           // 166.95 (2 digits after the '.')
     cout << "scientific with precision (2): " << scientific << db << endl; // 1.67e+002 (2 digits after the '.')
 
-    // For the same purpose, we can also use... (must include <iomanip>):
+    // For the same purpose, we can also use a one-time alternative... (must include <iomanip>):
     cout << fixed << setprecision(4) << db << endl;        // 4 dicimal places are displayed    // 776.6988
     cout << defaultfloat << setprecision(4) << db << endl; // all digits displayed are 4        // 776.7
 
@@ -172,7 +174,7 @@ int main(void)
 
     /* EXPLICIT CASTING:
 
-        They are a controlled way of evading type safety
+        It's a controlled way of evading type safety
          > (which means making sure that variables do not change types by mistake)
     */
     int anIntVar = 105;
@@ -187,7 +189,7 @@ int main(void)
         • They are also hard to 'search for' using a Find operation with your source code editor.
 
         ► The new format solves this problem: static_cast is easy to see and easy to search for.
-        ► These old casts still work, but their use is discouraged (or deprecated -to use the technical term.)
+        ► These old casts still work, but their use is discouraged or deprecated (to use the technical term.)
     */
 
     int intVar = 1500000000;                          // 1,500,000,000
@@ -197,16 +199,16 @@ int main(void)
     intVar = (static_cast<double>(intVar) * 10) / 10; // or <__int64>
     cout << "intVar = " << intVar << endl;            // right answer
 
-    /* However, in this situation, you can divide before multiply instead to avoid conversion */
+    /* However, in this situation, you can instead divide before multiply to avoid conversion */
     int intVar2 = 1500000000;
-    intVar2 = (intVar2 / 10) * 10;                      // intermediate value: (intVar * 10) is too large
-    cout << "intVar2 = " << intVar2 << endl;            // wrong answer
+    intVar2 = (intVar2 / 10) * 10;                      // intermediate value: (intVar / 10) is within int size
+    cout << "intVar2 = " << intVar2 << endl;            // right answer
     
     //................................................................
 
     /* MANIPULATORS */
 
-    // endl:    new line and it flushes the output buffer.
+    // endl:    new line ((and it flushes the output buffer))
     cout << "Hi!" << endl;
 
     // setw(n):
@@ -287,12 +289,12 @@ int main(void)
         // then (y = 0) value is 0
         // then x = 0
     
-    //  Operators are divided into:
+    //  Operators are also divided by the number of operands into:
             Unary Operators:    like '!' NOT    : takes one operand.
             Binary Operators:   like '+' Plus   : takes two operands.
             Ternary Operator:   Only ( ? : )    : takes three operands.
 
-    //  • If several operators appear on the same line → they have equal precedence.
+    //  • If several operators appear on the same line in the above table → they have equal precedence.
         └ Evaluation proceeds according to the associativity of the operator:
             └ Either from (right to left) or from (left to right).
     */
@@ -347,11 +349,13 @@ int main(void)
         For example, it allows you to safely use potentially null pointers in conditions without risking a runtime error: 
         -ChatGPT
     */
-    /*
+    /* Example usage:
         if (ptr != nullptr && ptr->isValid()) 
-        {
+        {   
 
         }
+
+        // ↑ here, you want to invoke ptr→isvalid(), but you want to make sure that ptr is not a nullptr first.
     */
 
     return 0;

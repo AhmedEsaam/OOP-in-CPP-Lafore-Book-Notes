@@ -53,7 +53,7 @@ int main()
 */
     
     obj;    ptr;    st;     un;         // identifier of any type, pointer, structure, or union
-    arr;                                // arry name is a pointer constant (an unmodifiable l-value)
+    arr;                                // arry name is a pointer constant (an un-modifiable l-value)
 
     arr[0];         ptr[0];             // array subscript [] that does not evaluate to an array
     *arr;           *ptr;               // dereference (unary *) that does not refer to an array, provided that it isn't a function pointer
@@ -103,14 +103,14 @@ int main()
 // _______________________
 /* rvalue → to lvalue: */
 
-    /// • the C++ programming language has been designed to prohibit such conversions.
-        // int& vref = 10;          // Error: does not work, as the reference should point to an existing object in memory, 
+    /// • The C++ programming language has been designed to prohibit such conversions.
+        // int& vref = 10;          // (Error): does not work, as the reference should point to an existing object in memory, 
                                     // but 10 is a numeric constant without a memory address.
 
 
     /// → What if you want to make a function that can take a reference or a vlaue?
         void fnc(int& x);
-        // fnc(10);                 // Error: This does not work. (invalid rvalue to lvalue)
+        // fnc(10);                 // (Error): This does not work. (invalid rvalue to lvalue)
 
         // but there is a workaround! :-
         int temp = 10;              // create a temporary variable where to store the rvalue
@@ -133,7 +133,7 @@ int main()
         void fncc(const int& x);
         fncc(10);                   // works well! (without the need for a temp. variable)
 
-        // Now your reference points to something that exists for real (until it goes out of scope) 
+        // Now, your reference points to something that exists for real (until it goes out of scope) 
         // and you can use it as usual, except for modifying the value it points to.
 
 
@@ -159,12 +159,12 @@ int main()
 
 /* ♣ lvales and rvalues as operands ♣ */////////////////////////////////////
 
-// ♦ Operators that require lvalues as their operand (argument) :-
-// '='          The built-in assignment operator (as its left operand.)
-// '&'          The built-in address-of operator.
-// '++', '--'   increment and decrement
-
-// ♦ almost all other operators require rvalues.
+/*Operators that require lvalues as their operand (argument) :-
+    '='          The built-in assignment operator (as its left operand.)
+    '&'          The built-in address-of operator.
+    '++', '--'   increment and decrement
+*/
+// ♦ almost all other operators require rvalues. (So often when given lvalues, they are implicitly converted to rvalues)
 
 /*
     The rules are not as strict for user-defined operators...;

@@ -55,7 +55,7 @@ public:
         //  when scope terminates, unless it is deallocated deliperately.
         
         // ♦ Make sure to pass this class objects by reference as implicitly using the copy constructor in passing by value
-        //      would deletes the allocated memory when scope terminates.     
+        //      would delete the allocated memory when scope terminates.     
     }
     void display()
         { cout << str << endl; }
@@ -135,7 +135,7 @@ public:
 
 void Linklist::add_item(int d)
 {
-    Link* newlink = new Link;       // allocate memory for a new link
+    Link* newlink = new Link;       // allocates memory for a new link
     newlink->data = d;              // set the data variable to the value passed as an argument
     newlink->next = head;           // A new link is inserted at the beginning of the list
     head = newlink;                 // head points to the newest link
@@ -160,15 +160,15 @@ void Linklist::add_item(int d)
 void Linklist::display()
 {
     Link* current = head;
-    // while(current != NULL)
-    // {
-    //     cout << current->data << endl;
-    //     current = current->next;
-    // }
+    while(current != NULL)
+    {
+        cout << current->data << endl;
+        current = current->next;
+    }
     
     // another way of printing
-    for( ; current != NULL; current = current-> next)
-        {   cout << current->data << endl; }
+    // for( ; current != NULL; current = current-> next)
+    //     {   cout << current->data << endl; }
 }
 
 
@@ -277,7 +277,7 @@ int main()
     /* Note:
         The pointer must be given some value, or it will point to an addresss we don't want it to point to.
         >> Rogue pointer values can result in system crashes and are difficult to debug.
-        So, Make sure you give every pointer variable a valid address value before using it.
+        So, Make sure you give every pointer variable a valid address value before using it (ex.: NULL).
     */
 
     ///* To assign one kind of pointer type to another ................................:
@@ -351,7 +351,7 @@ int main()
     {   cout << "\ndblArr[" << i << "] = " << dblArr[i] << " cm"; } cout << endl;
     
 
-    ///* Arry Bubble Sort ............................................................:
+    ///* Array Bubble Sort ............................................................:
     void BubbleSort(int *, int);
     int intArr2[MAX] = {61, 46, 49, 32, 64};
     BubbleSort(intArr2, MAX);
@@ -488,7 +488,7 @@ int main()
     pDist = new Distance;       // allocate memory for a Distance at run-time
     pDist->get_dist();          // access the unnamed object members
     pDist->show_dist();         // using the membership-access operator -> 
-    (*pDist).show_dist();       // this is ok as well but inelegant!
+    (*pDist).show_dist();       // this is ok as well but not elegant!
     cout << endl;
 
     // OR (for a less common approach):
@@ -531,7 +531,7 @@ int main()
             we move the pointers to the objects. 
             ► This eliminates the need to shuffle the objects around in memory,
                 which can be very time-consuming if the objects are large.
-            ► It could also, if we wanted, allow us to keep multiple sorts—one by name and another by phone number, for example—
+            ► It could also, if we wanted, allow us to keep multiple sorts —one by name and another by phone number, for example—
                 in memory at the same time without storing the objects multiple times.
                 (and that can be done by creating another array of pointers which we can sort in another way.)
     */

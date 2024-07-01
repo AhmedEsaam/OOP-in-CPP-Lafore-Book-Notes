@@ -3,6 +3,7 @@
 #include <typeinfo>
 using namespace std;
 
+/// Polymorphism ///
 
 /// Virtual functions /////////////////////////////////////////////////////////////////////:
 // 'Virtual' means existing in appearance but not in reality. 
@@ -106,6 +107,12 @@ public:
             then you can pass child classes addresses in any order.
             
     ► This is an example of polymorphism. 
+    • Plese maintain accessibility between Base Class and Child Class:
+        Use same accessibility in the base class or increase it.
+        - Example:  public in Base      → public in Child
+                    protected in Base   → public or protected in Child
+                    private in Base     → it's not seen anyway in Child, so it'll be a new function any way (not overriden)
+
 */
 
 /// Example: Person class ...............................................................................:
@@ -1219,9 +1226,10 @@ Zeta func(void) { return Zeta(0); }
 /////////////////////////////////////////////////////////////////////////
 
 /*
-    Subtype polymorphism is also known as runtime polymorphism.
-    Parametric polymorphism is also known as compile-time polymorphism.
-    Ad-hoc polymorphism is also known as overloading.
+    Ad-hoc polymorphism is also known as        overloading.                    (Function overloading)
+    Parametric polymorphism is also known as    compile-time polymorphism.      (Function overriding) (Static binding) 
+    Subtype polymorphism is also known as       runtime polymorphism.           (Function overriding) (Dynamic binding)
+
     Coercion is also known as (implicit or explicit) casting.
 */
 // Using Virtual tables
